@@ -129,6 +129,14 @@ can also be specified here.
 
 ### Troubleshooting Notes
 
+* For hail 0.2.88/spark 3.1.2 modify the following lines in the cluster's 
+  `/opt/spark/conf/spark-defaults.conf` file
+  ```bash
+  spark.driver.extraClassPath      /home/ubuntu/venv/lib/python3.8/site-packages/hail/backend/hail-all-spark.jar
+  spark.executor.extraClassPath    /home/ubuntu/venv/lib/python3.8/site-packages/hail/backend/hail-all-spark.jar
+  spark.jars                       /home/ubuntu/venv/lib/python3.8/site-packages/hail/backend/hail-all-spark.jar
+  ```
+
 * Your cluster name should never contain underscore characters; valid
   choices are alphanumeric characters and dashes.
 
