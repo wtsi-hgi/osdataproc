@@ -129,6 +129,11 @@ can also be specified here.
 
 ### Troubleshooting Notes
 
+* Please check the version of jinja2, make sure it is < 3.1, otherwise you may have the error message as below.
+
+[WARNING]: Skipping plugin (/lib/python3.9/site-packages/ansible/plugins/filter/mathstuff.py) as it seems to be invalid: cannot import name
+'environmentfilter' from 'jinja2.filters' (/lib/python3.9/site-packages/jinja2/filters.py)
+
 * For hail 0.2.88/spark 3.1.2 modify the following lines in the cluster's 
   `/opt/spark/conf/spark-defaults.conf` file
   ```bash
