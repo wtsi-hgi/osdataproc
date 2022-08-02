@@ -129,7 +129,7 @@ can also be specified here.
 
 ### Troubleshooting Notes
 
-* Please check the version of jinja2, make sure it is < 3.1, otherwise you may have the error message as below.
+* Please check the version of jinja2, make sure it is 3.0.3, otherwise you may have the error message as below.
 
   ```bash
   [WARNING]: Skipping plugin (/lib/python3.9/site-packages/ansible/plugins/filter/mathstuff.py) as it seems to be invalid: cannot import name
