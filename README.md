@@ -20,8 +20,8 @@ monitoring.
    architecture.
 
    ```bash
-   wget https://releases.hashicorp.com/terraform/0.13.5/terraform_0.13.5_linux_amd64.zip
-   unzip terraform_0.13.5_linux_amd64.zip -d env/bin/
+   wget https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip
+   unzip terraform_1.0.11_linux_amd64.zip -d env/bin/
    ```
 
 3. Source the environment, clone this repository and install the
