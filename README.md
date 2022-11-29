@@ -175,6 +175,20 @@ can also be specified here.
 * For Sanger users, check the appropriate FCE capacity dashboard under
   the [Sanger metrics][metrics].
 
+* If `spark-submit` is not on PATH (`spark-submit: command not found`), activate the venv
+    ```bash
+    source /home/ubuntu/venv/bin/activate
+    ```
+
+* If running `spark-submit` you get the following error
+    ```bash
+    TypeError: 'JavaPackage' object is not callable
+    ```
+    check that `SPARK_HOME` is set to `/opt/spark`  
+    ```bash
+    export SPARK_HOME=/opt/spark
+    ```
+
 ### Contributing and Editing
 
 You can contribute by submitting pull requests to this repository. If
