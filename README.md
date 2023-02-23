@@ -120,6 +120,8 @@ the details.
 osdataproc destroy <cluster_name>
 ```
 
+You will be prompted to type 'yes' if you are happy with printed destroy plan.
+
 ### Configuration Options
 
 There is a [vars.yml][vars] file where default options for creating the
