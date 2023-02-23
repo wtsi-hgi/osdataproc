@@ -20,8 +20,8 @@ monitoring.
    architecture.
 
    ```bash
-   wget https://releases.hashicorp.com/terraform/0.13.5/terraform_0.13.5_linux_amd64.zip
-   unzip terraform_0.13.5_linux_amd64.zip -d env/bin/
+   wget https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip
+   unzip terraform_1.0.11_linux_amd64.zip -d env/bin/
    ```
 
 3. Source the environment, clone this repository and install the
@@ -120,6 +120,8 @@ the details.
 osdataproc destroy <cluster_name>
 ```
 
+You will be prompted to type 'yes' if you are happy with printed destroy plan.
+
 ### Configuration Options
 
 There is a [vars.yml][vars] file where default options for creating the
@@ -174,6 +176,20 @@ can also be specified here.
 
 * For Sanger users, check the appropriate FCE capacity dashboard under
   the [Sanger metrics][metrics].
+
+* If `spark-submit` is not on PATH (`spark-submit: command not found`), activate the venv
+    ```bash
+    source /home/ubuntu/venv/bin/activate
+    ```
+
+* If running `spark-submit` you get the following error
+    ```bash
+    TypeError: 'JavaPackage' object is not callable
+    ```
+    check that `SPARK_HOME` is set to `/opt/spark`  
+    ```bash
+    export SPARK_HOME=/opt/spark
+    ```
 
 ### Contributing and Editing
 
