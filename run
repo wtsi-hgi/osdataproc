@@ -9,6 +9,8 @@ OSDP_HOME=$(dirname "$0")
 export TF_IN_AUTOMATION=1 # Limit Terraform output
 export TF_VAR_username=$OS_USERNAME
 export TF_VAR_cluster_name=${2}
+export TF_LOG="ERROR"
+export TF_LOG_PATH="terraform.log"
 # generate API key for netdata
 export NETDATA_API_KEY=$(uuidgen)
 export TF_VAR_netdata_api_key=${NETDATA_API_KEY}
