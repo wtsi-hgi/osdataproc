@@ -30,7 +30,9 @@ hail_version: 0.2.105
 extra_pkgs:
 
 ## Additional pip python modules to install on the cluster
-extra_python_modules:
+master_extra_python_modules:
+
+worker_extra_python_modules:
   - numpy
 
 ###############################################################################

@@ -29,7 +29,7 @@
   become_user: "{{ spark_user }}"
   pip:
           state: present
-          name: "{{ extra_python_modules }}"
+          name: "{{ worker_extra_python_modules }}"
           virtualenv: "{{ venv_dir }}"
           virtualenv_command: /usr/bin/python3 -m venv
 
