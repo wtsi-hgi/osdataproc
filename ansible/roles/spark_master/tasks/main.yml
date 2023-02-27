@@ -38,7 +38,7 @@
           state: present
           name:
             - "hail=={{ hail_version }}"
-            - pyspark
+            - "pyspark=={{ spark_version }}"
             - jupyterlab==2.2.9
             - pyopenssl
           virtualenv: "{{ venv_dir }}"
