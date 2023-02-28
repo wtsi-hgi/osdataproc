@@ -20,7 +20,16 @@
   become_user: "{{ spark_user }}"
   pip:
           state: present
-          name: pyspark~=2.4
+          name: "pyspark=={{ spark_version }}"
+          virtualenv: "{{ venv_dir }}"
+          virtualenv_command: /usr/bin/python3 -m venv
+
+- name: Install extra python modules in venv
+  become: yes
+  become_user: "{{ spark_user }}"
+  pip:
+          state: present
+          name: "{{ worker_extra_python_modules }}"
           virtualenv: "{{ venv_dir }}"
           virtualenv_command: /usr/bin/python3 -m venv
 

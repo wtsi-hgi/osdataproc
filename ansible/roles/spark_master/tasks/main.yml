@@ -38,7 +38,7 @@
           state: present
           name:
             - "hail=={{ hail_version }}"
-            - pyspark
+            - "pyspark=={{ spark_version }}"
             - jupyterlab==2.2.9
             - pyopenssl
           virtualenv: "{{ venv_dir }}"
@@ -49,7 +49,7 @@
   become_user: "{{ spark_user }}"
   pip:
           state: present
-          name: "{{ extra_python_modules }}"
+          name: "{{ master_extra_python_modules }}"
           virtualenv: "{{ venv_dir }}"
           virtualenv_command: /usr/bin/python3 -m venv
 
