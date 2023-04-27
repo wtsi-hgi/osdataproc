@@ -14,14 +14,14 @@ monitoring.
    python3 -m venv env
    ```
 
-2. Download [Terraform](https://terraform.io) (1.2, or higher) and
+2. Download [Terraform](https://terraform.io) (1.4, or higher) and
    unzip it into a location on your path, e.g. into your venv. Make sure
    to download the appropriate version for your operating system and
    architecture.
 
    ```bash
-   wget https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_linux_amd64.zip
-   unzip terraform_1.3.9_linux_amd64.zip -d env/bin/
+   curl https://releases.hashicorp.com/terraform/1.4.6/terraform_1.4.6_darwin_amd64.zip > terraform_1.4.6_darwin_amd64.zip
+   unzip terraform_1.4.6_darwin_amd64.zip
    ```
 
 3. Source the environment, clone this repository and install the
