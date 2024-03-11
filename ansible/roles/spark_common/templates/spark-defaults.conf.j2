@@ -4,9 +4,9 @@ spark.driver.memory              {{ ( 0.8 * ansible_memtotal_mb ) | int() }}m
 spark.executor.memory            {{ ( 0.8 * ansible_memtotal_mb ) | int() }}m
 spark.executor.instances         1
 
-spark.driver.extraClassPath      {{ hail_home }}/lib/python3.8/site-packages/hail/backend/hail-all-spark.jar
-spark.executor.extraClassPath    {{ hail_home }}/lib/python3.8/site-packages/hail/backend/hail-all-spark.jar
-spark.jars                       {{ hail_home }}/lib/python3.8/site-packages/hail/backend/hail-all-spark.jar
+spark.driver.extraClassPath      {{ hail_home }}/lib/python{{ python_version }}/site-packages/hail/backend/hail-all-spark.jar
+spark.executor.extraClassPath    {{ hail_home }}/lib/python{{ python_version }}/site-packages/hail/backend/hail-all-spark.jar
+spark.jars                       {{ hail_home }}/lib/python{{ python_version }}/site-packages/hail/backend/hail-all-spark.jar
 
 spark.history.fs.logDirectory    hdfs:///shared/spark-logs
 spark.eventLog.enabled           true
