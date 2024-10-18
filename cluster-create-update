@@ -1,0 +1,21 @@
+#!/bin/bash
+set -e
+
+cluster_name="gz3-hail-update"
+
+if [ -z ${OS_PASSWORD+x} ]; then
+    source /Users/gz3/gdrive/BirthCohort/hgi-collaborations-openrc.sh
+fi
+
+python3.9 osdataproc.py create           \
+  --public-key /Users/gz3/.ssh/id_rsa.pub \
+  --num-workers 1                    \
+  --flavour m1.medium                \
+  --nfs-volume "${cluster_name}"  \
+  --image-name hgi_cant_use_another_image_and_cant_use_an_id_focal-WTSI-lustreonly_200329_c2979847 \
+  --lustre-network lustre-hgi07      \
+ "${cluster_name}" 2>&1 | tee "${cluster_name}.log"
+
+ # To add volume
+ #
+

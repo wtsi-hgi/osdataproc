@@ -6,7 +6,8 @@ exec >>/var/log/user_data.log 2>&1
 rm /var/lib/cloud/instance/sem/config_scripts_user
 
 REPO=https://github.com/wtsi-hgi/osdataproc.git
-BRANCH=master
+#BRANCH=master
+BRANCH=hail-update-2024
 FOLDER=/tmp/osdataproc
 
 if ! [[ -d $FOLDER ]]; then

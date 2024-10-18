@@ -1,10 +1,14 @@
 # osdataproc
 
-osdataproc is a command-line tool for creating an OpenStack cluster with
+`osdataproc` is a command-line tool for creating an OpenStack cluster with
 [Apache Spark][spark] and [Apache Hadoop][hadoop] configured. It comes
 with [JupyterLab][jupyter] and [Hail][hail], a genomic data analysis
 library built on Spark installed, as well as [Netdata][netdata] for
 monitoring.
+
+The `osdataproc` uses [Terraform](https://www.terraform.io/) to spin up
+cluster in OpenStack, and
+[Ansible](https://www.ansible.com/) to set up data on cluster
 
 ### Setup
 
@@ -197,6 +201,24 @@ You can contribute by submitting pull requests to this repository. If
 you create a fork you will need to update the `REPO` and `BRANCH`
 variables in `terraform/user-data.sh.tpl` to the new repository location
 for the changes you make to be reflected in the created cluster.
+
+# Developing and debugging notes
+
+### Main variables
+Variables containing main package versions are defined in the `vars.yaml`
+JDK version is defined in `ansible/roles/commom/default`
+
+### Logs location
+
+All Terraform and Ansible logs are located directly in the `/var/log` folder.
+
+### Updating installation on worker nodes
+
+To run Ansible playbooks on the worker nodes, Terraform clones it from the public git repository.
+To apply updated playbooks on cluster creation, you need to push changes to git branch and use this branch 
+in the `terraform/user-data.sh.tpl` script.
+
+
 
 ### To Do
 
