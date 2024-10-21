@@ -29,10 +29,11 @@ hail_version: 0.2.127
 
 ## Additional Ubuntu packages to install on the cluster
 extra_pkgs:
-
+  - python3.9-dev
+  - libpq-dev
 ## Additional pip python modules to install on the cluster
 master_extra_python_modules:
-
+  - gnomad
 worker_extra_python_modules:
   - numpy
 

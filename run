@@ -54,6 +54,7 @@ get_apply_vars () {
 
 ansible() {
   export ANSIBLE_HOST_KEY_CHECKING=False
+  export ANSIBLE_CONFIG=${OSDP_HOME}/ansible/ansible.cfg
   ansible-playbook ${OSDP_HOME}/ansible/main.yml \
                    -i ${OSDP_HOME}/terraform/terraform.tfstate.d/${TF_VAR_cluster_name}/hosts_${1} \
                    -e 'ansible_python_interpreter=/usr/bin/python3' \
