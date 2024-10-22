@@ -1,5 +1,5 @@
 ---
-spark_version: 2.4.5
+spark_version: 3.5.3 # TODO: Merge with the main vars.yaml
 spark_mirror: https://archive.apache.org/dist/spark
 
 spark_download_dir: /opt/osdataproc
@@ -13,7 +13,7 @@ spark_group: "{{ group }}"
 spark_master_host: spark-master
 spark_master_port: 7077
 
-hail_version: 0.2.34
+hail_version: 0.2.133  # TODO: Merge with the main vars.yaml
 hail_install_dir: "{{ venv_dir }}"
 hail_home: "{{ hail_install_dir }}"
 

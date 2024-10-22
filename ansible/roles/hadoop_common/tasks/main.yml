@@ -18,7 +18,11 @@
           - "{{ yarn_home }}"
           - "{{ yarn_logs_dir }}"
 
-- name: Download Hadoop distribution
+- name: Echo Hadoop download URL
+  ansible.builtin.debug:
+    msg: "{{ hadoop_mirror }}/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz"
+
+- name: Download Hadoop distribution (about 1Gb, can take a while)
   become: yes
   get_url:
           url: "{{ hadoop_mirror }}/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz"

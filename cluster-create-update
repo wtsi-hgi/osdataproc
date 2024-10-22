@@ -9,7 +9,7 @@ fi
 
 python3.9 osdataproc.py create           \
   --public-key /Users/gz3/.ssh/id_rsa.pub \
-  --num-workers 1                    \
+  --num-workers 2                    \
   --flavour m1.medium                \
   --nfs-volume "${cluster_name}"  \
   --image-name hgi_cant_use_another_image_and_cant_use_an_id_focal-WTSI-lustreonly_200329_c2979847 \

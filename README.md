@@ -211,6 +211,9 @@ JDK version is defined in `ansible/roles/commom/default`
 ### Logs location
 
 All Terraform and Ansible logs are located directly in the `/var/log` folder.
+By default, Ansible writes data to syslog
+
+Logs for master node is also saved to the OSDataProc_HOME}/terraform/terraform.tfstate.d/cluster_name/ansible-master.log
 
 ### Updating installation on worker nodes
 

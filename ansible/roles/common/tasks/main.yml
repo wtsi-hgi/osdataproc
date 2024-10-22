@@ -52,31 +52,31 @@
     - lock
     - lock-frontend
 
-- name: Install python packages
+- name: Install Python packages
   become: yes
   apt:
           name: "{{ python_pkgs }}"
           state: latest
 
-- name: Install Java 8 packages
+- name: Install Java packages
   become: yes
   apt:
           name: "{{ java_pkgs }}"
           state: latest
 
-- name: Install scala
+- name: Install Scala
   become: yes
   apt:
           name: scala
           state: latest
 
-- name: Install nfs packages
+- name: Install NFS packages
   become: yes
   apt:
           name: "{{ nfs_pkgs }}"
           state: latest
 
-- name: Disable nfs-server
+- name: Disable NFS server
   service: name=nfs-server state=stopped enabled=no
   tags: master
 

@@ -82,6 +82,12 @@ case ${1} in
     ansible "master"
     exit 0
     ;;
+  # The debug option to rerun Ansible playbook on master node. Run with the fill path and the cluster name
+  # bash -x /Users/gz3/programming/osdataproc/run ansibledebug gz3-hail-cluster-test
+  ansibledebug)
+    ansible "master"
+    exit 0
+    ;;
   destroy)
     if ! terraform workspace select ${2} ; then
       echo "Cluster not found"
