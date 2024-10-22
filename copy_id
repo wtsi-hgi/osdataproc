@@ -1,2 +1,2 @@
 #!/bin/bash
-oscp ~/.ssh/id_rsa $hail_cluster_collab:/home/ubuntu/.ssh
+scp ~/.ssh/id_rsa $hail_cluster_collab:/home/ubuntu/.ssh
