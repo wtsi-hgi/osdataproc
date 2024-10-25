@@ -79,7 +79,7 @@ osdataproc create [--num-workers]    <Number of desired worker nodes>
                   <cluster_name>
 ```
 
-NOTE: Ensure that the image used has python3.8 as the default version of python. The focal images should work.
+NOTE: Ensure that the image used has python3.9 as the default version of python. The focal images should work.
 
 `osdataproc create` will output the public IP of your master node when
 the node has been created. You can SSH into this using the public key
@@ -140,14 +140,6 @@ can also be specified here.
   ```bash
   [WARNING]: Skipping plugin (/lib/python3.9/site-packages/ansible/plugins/filter/mathstuff.py) as it seems to be invalid: cannot import name
   'environmentfilter' from 'jinja2.filters' (/lib/python3.9/site-packages/jinja2/filters.py)
-  ```
-
-* For hail 0.2.88/spark 3.1.2 modify the following lines in the cluster's 
-  `/opt/spark/conf/spark-defaults.conf` file
-  ```bash
-  spark.driver.extraClassPath      /home/ubuntu/venv/lib/python3.8/site-packages/hail/backend/hail-all-spark.jar
-  spark.executor.extraClassPath    /home/ubuntu/venv/lib/python3.8/site-packages/hail/backend/hail-all-spark.jar
-  spark.jars                       /home/ubuntu/venv/lib/python3.8/site-packages/hail/backend/hail-all-spark.jar
   ```
 
 * Your cluster name should never contain underscore characters; valid
@@ -211,7 +203,7 @@ JDK version is defined in `ansible/roles/commom/default`
 ### Logs location
 
 All Terraform and Ansible logs are located directly in the `/var/log` folder.
-By default, Ansible writes data to syslog
+By default, Ansible writes data to syslog.
 
 Logs for master node is also saved to the OSDataProc_HOME}/terraform/terraform.tfstate.d/cluster_name/ansible-master.log
 
@@ -220,7 +212,6 @@ Logs for master node is also saved to the OSDataProc_HOME}/terraform/terraform.t
 To run Ansible playbooks on the worker nodes, Terraform clones it from the public git repository.
 To apply updated playbooks on cluster creation, you need to push changes to git branch and use this branch 
 in the `terraform/user-data.sh.tpl` script.
-
 
 
 ### To Do
