@@ -22,12 +22,33 @@
   ansible.builtin.debug:
     msg: "{{ hadoop_mirror }}/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz"
 
+- name: Use local Hadoop tarball if present
+  become: yes
+  copy:
+          src: "{{ osdataproc.downloads_dir | expanduser }}/hadoop-{{ hadoop_version }}.tar.gz"
+          dest: "{{ hadoop_download_dir }}/hadoop.tar.gz"
+          mode: '0644'
+  when: lookup('file', (osdataproc.downloads_dir | expanduser) ~ '/hadoop-' ~ hadoop_version ~ '.tar.gz', errors='ignore') | length > 0
+  tags: master
+
+# - name: Download Hadoop distribution from S3 cache (if available)
+#   become: yes
+#   get_url:
+#           url: "{{ cache_base_url }}/hadoop-{{ hadoop_version }}.tar.gz"
+#           dest: "{{ hadoop_download_dir }}/hadoop.tar.gz"
+#           timeout: 60
+#   when: lookup('file', '/home/ubuntu/work/hail-cluster-openstack/downloads/hadoop-' ~ hadoop_version ~ '.tar.gz', errors='ignore') | length == 0
+#   ignore_errors: yes
+#   register: hadoop_s3_get
+#   tags: master
+
 - name: Download Hadoop distribution (about 1Gb, can take a while)
   become: yes
   get_url:
           url: "{{ hadoop_mirror }}/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz"
           dest: "{{ hadoop_download_dir }}/hadoop.tar.gz"
           timeout: 60
+  when: lookup('file', (osdataproc.downloads_dir | expanduser) ~ '/hadoop-' ~ hadoop_version ~ '.tar.gz', errors='ignore') | length == 0 and (hadoop_s3_get is not defined or hadoop_s3_get is failed)
   tags: master
 
 - name: Extract Hadoop distribution

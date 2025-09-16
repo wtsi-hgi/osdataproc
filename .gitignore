@@ -164,3 +164,7 @@ cython_debug/
 # OpenRC env configuration files
 *openrc.sh
 
+# terraform
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate.d/
