@@ -1,6 +1,6 @@
 ---
-spark_version: 3.5.3 # TODO: Merge with the main vars.yaml
-spark_mirror: https://archive.apache.org/dist/spark
+spark_version: 3.5.6 # TODO: Merge with the main vars.yaml
+spark_mirror: https://mirrors.sonic.net/mirrors/apache/spark
 
 # Cache for pre-staged artifacts (S3-compatible, path-style). Override if needed.
 # cache_base_url: https://cog.sanger.ac.uk/osdataproc-cache
@@ -16,7 +16,7 @@ spark_group: "{{ group }}"
 spark_master_host: spark-master
 spark_master_port: 7077
 
-hail_version: 0.2.133  # TODO: Merge with the main vars.yaml
+hail_version: 0.2.134  # TODO: Merge with the main vars.yaml
 hail_install_dir: "{{ venv_dir }}"
 hail_home: "{{ hail_install_dir }}"
 

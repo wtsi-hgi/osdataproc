@@ -1,6 +1,6 @@
 ---
-hadoop_version: 3.4.0 # TODO: Merge with the main vars.yaml
-hadoop_mirror: https://archive.apache.org/dist/hadoop/common
+hadoop_version: 3.3.6 # TODO: Merge with the main vars.yaml
+hadoop_mirror: https://mirrors.sonic.net/mirrors/apache/hadoop/common
 
 # Cache for pre-staged artifacts (S3-compatible, path-style). Override if needed.
 # cache_base_url: https://cog.sanger.ac.uk/osdataproc-cache
