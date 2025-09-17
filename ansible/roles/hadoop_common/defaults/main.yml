@@ -1,5 +1,5 @@
 ---
-hadoop_version: 3.3.6 # TODO: Merge with the main vars.yaml
+hadoop_version: 3.4.1 # TODO: Merge with the main vars.yaml
 hadoop_mirror: https://mirrors.sonic.net/mirrors/apache/hadoop/common
 
 # Cache for pre-staged artifacts (S3-compatible, path-style). Override if needed.
