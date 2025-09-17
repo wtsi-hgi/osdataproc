@@ -52,11 +52,40 @@
     - lock
     - lock-frontend
 
-- name: Install Python packages
+- name: Install Python packages (base)
   become: yes
   apt:
-          name: "{{ python_pkgs }}"
+          name: 
+            - python3-pip
+            - python3-passlib
+            - curl
           state: latest
+
+- name: Install uv (Python toolchain & resolver)
+  become: yes
+  shell: curl -LsSf https://astral.sh/uv/install.sh | sh
+  args:
+    creates: /root/.local/bin/uv
+
+- name: Install Python 3.12 using uv
+  become: yes
+  shell: /root/.local/bin/uv python install 3.12
+  args:
+    creates: /root/.local/bin/python3.12
+
+- name: Create symlink for python3.12
+  become: yes
+  file:
+    src: /root/.local/bin/python3.12
+    dest: /usr/local/bin/python3.12
+    state: link
+
+- name: Create symlink for python3.12-venv
+  become: yes
+  file:
+    src: /root/.local/bin/python3.12
+    dest: /usr/local/bin/python3.12-venv
+    state: link
 
 - name: Install Java packages
   become: yes
