@@ -158,6 +158,8 @@
   command: "./configure --prefix={{ nginx_prefix }} {{ nginx_custom_modules }} --add-module={{ subs_filter_path }}"
   args:
           chdir: "{{ nginx_install_dir }}"
+  environment:
+          CFLAGS: "-Wno-error=deprecated-declarations"
   when: nginx_source_unpack.changed
   register: nginx_configure
   tags: master
@@ -167,6 +169,8 @@
   shell: make && make install
   args:
           chdir: "{{ nginx_install_dir }}"
+  environment:
+          CFLAGS: "-Wno-error=deprecated-declarations"
   when: nginx_configure.changed
   tags: master
 

@@ -49,7 +49,7 @@ nginx_pkgs:
         - libpcre3-dev
         - libssl-dev
 
-nginx_version: nginx-1.17.9
+nginx_version: nginx-1.24.0
 nginx_tarball_url: "http://nginx.org/download/{{ nginx_version }}.tar.gz"
 nginx_install_dir: "/tmp/{{ nginx_version }}"
 nginx_prefix: "/etc/nginx"
