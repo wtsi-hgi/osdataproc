@@ -79,6 +79,9 @@
     src: /root/.local/bin/python3.12
     dest: /usr/local/bin/python3.12
     state: link
+    owner: root
+    group: root
+    mode: '0755'
 
 - name: Create symlink for python3.12-venv
   become: yes
@@ -86,6 +89,9 @@
     src: /root/.local/bin/python3.12
     dest: /usr/local/bin/python3.12-venv
     state: link
+    owner: root
+    group: root
+    mode: '0755'
 
 - name: Install Java packages
   become: yes
