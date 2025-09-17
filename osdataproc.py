@@ -77,9 +77,9 @@ def ensure_pre_downloads(config):
     spark_version = config.get("spark_version")
 
     hadoop_mirror = config.get(
-        "hadoop_mirror", "https://archive.apache.org/dist/hadoop/common"
+        "hadoop_mirror", "https://mirrors.sonic.net/mirrors/apache/hadoop/common"
     )
-    spark_mirror = config.get("spark_mirror", "https://archive.apache.org/dist/spark")
+    spark_mirror = config.get("spark_mirror", "https://mirrors.sonic.net/mirrors/apache/spark")
 
     planned_downloads = []
     if hadoop_version:
