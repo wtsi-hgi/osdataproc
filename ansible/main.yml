@@ -13,7 +13,7 @@
           - include_role:
                   name: spark_master
 
- - hosts: spark_workers,localhost
+- hosts: spark_workers,localhost
   become: true
   gather_facts: no
   vars:
