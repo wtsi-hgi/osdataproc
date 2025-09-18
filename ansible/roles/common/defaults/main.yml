@@ -7,6 +7,9 @@ java_home: /usr
 venv_dir: "{{ home }}/venv"
 netdata_dir: /opt/netdata
 
+# Python version (should be overridden by main vars.yml)
+python_version: 3.10
+
 java_pkgs:
         - software-properties-common
         - ca-certificates
