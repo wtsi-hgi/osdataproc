@@ -29,7 +29,7 @@
     - setuptools
     - wheel
     virtualenv: "{{ venv_dir }}"
-    virtualenv_command: /usr/local/bin/python{{ python_version }} -m venv
+    virtualenv_command: /usr/bin/python3.10 -m venv
 
 - name: Install python modules in venv
   become: yes
@@ -42,7 +42,7 @@
             - jupyterlab==2.2.9
             - pyopenssl
           virtualenv: "{{ venv_dir }}"
-          virtualenv_command: /usr/local/bin/python{{ python_version }} -m venv
+          virtualenv_command: /usr/bin/python3.10 -m venv
 
 - name: Install extra python modules in venv
   become: yes
@@ -51,7 +51,7 @@
           state: present
           name: "{{ master_extra_python_modules }}"
           virtualenv: "{{ venv_dir }}"
-          virtualenv_command: /usr/local/bin/python{{ python_version }} -m venv
+          virtualenv_command: /usr/bin/python3.10 -m venv
 
 - name: Create Jupyter directories
   file:
