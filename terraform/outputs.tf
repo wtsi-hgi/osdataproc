@@ -1,7 +1,10 @@
 resource "local_file" "ansible_inventory" {
   filename        = "${path.root}/terraform.tfstate.d/${var.cluster_name}/hosts_master"
   file_permission = "0644"
-  content         = templatefile("ansible-inventory.tpl", {master_ip = module.networking.floating_ip})
+  content         = templatefile("ansible-inventory.tpl", {
+    master_ip = module.networking.floating_ip,
+    worker_ips = module.networking.worker_ips
+  })
 }
 
 resource "local_file" "destroy_variables" {
