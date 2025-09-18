@@ -73,6 +73,14 @@
   args:
     creates: /root/.local/bin/python3.12
 
+- name: Set permissions on Python 3.12 binary
+  become: yes
+  file:
+    path: /root/.local/bin/python3.12
+    mode: '0755'
+    owner: root
+    group: root
+
 - name: Create symlink for python3.12
   become: yes
   file:
