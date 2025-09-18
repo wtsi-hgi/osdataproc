@@ -19,6 +19,8 @@ nfs_pkgs:
         - cryptsetup
 
 python_pkgs:
+        - python{{ python_version }}
+        - python{{ python_version }}-venv
         - python3-pip
         - python3-passlib
 
