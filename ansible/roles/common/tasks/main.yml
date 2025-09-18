@@ -58,37 +58,20 @@
           name: "{{ python_pkgs }}"
           state: latest
 
-- name: Install uv (Python toolchain & resolver)
+- name: Add deadsnakes PPA for Python 3.12
   become: yes
-  shell: curl -LsSf https://astral.sh/uv/install.sh | sh
-  args:
-    creates: /root/.local/bin/uv
+  apt_repository:
+    repo: ppa:deadsnakes/ppa
+    state: present
 
-- name: Install Python 3.12 using uv
+- name: Install Python 3.12 from deadsnakes PPA
   become: yes
-  shell: /root/.local/bin/uv python install 3.12
-  args:
-    creates: /root/.local/bin/python3.12
-
-- name: Copy Python 3.12 binary to system location
-  become: yes
-  copy:
-    src: /root/.local/bin/python3.12
-    dest: /usr/local/bin/python3.12
-    mode: '0755'
-    owner: root
-    group: root
-    remote_src: yes
-
-- name: Create symlink for python3.12-venv
-  become: yes
-  file:
-    src: /usr/local/bin/python3.12
-    dest: /usr/local/bin/python3.12-venv
-    state: link
-    owner: root
-    group: root
-    mode: '0755'
+  apt:
+    name:
+      - python3.12
+      - python3.12-venv
+      - python3.12-dev
+    state: present
 
 - name: Install Java packages
   become: yes
