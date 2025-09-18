@@ -73,28 +73,20 @@
   args:
     creates: /root/.local/bin/python3.12
 
-- name: Set permissions on Python 3.12 binary
+- name: Copy Python 3.12 binary to system location
   become: yes
-  file:
-    path: /root/.local/bin/python3.12
-    mode: '0755'
-    owner: root
-    group: root
-
-- name: Create symlink for python3.12
-  become: yes
-  file:
+  copy:
     src: /root/.local/bin/python3.12
     dest: /usr/local/bin/python3.12
-    state: link
+    mode: '0755'
     owner: root
     group: root
-    mode: '0755'
+    remote_src: yes
 
 - name: Create symlink for python3.12-venv
   become: yes
   file:
-    src: /root/.local/bin/python3.12
+    src: /usr/local/bin/python3.12
     dest: /usr/local/bin/python3.12-venv
     state: link
     owner: root
