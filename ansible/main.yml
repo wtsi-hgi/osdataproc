@@ -13,11 +13,10 @@
           - include_role:
                   name: spark_master
 
-- hosts: spark_workers,localhost
+ - hosts: spark_workers,localhost
   become: true
   gather_facts: no
   vars:
-          ansible_ssh_common_args: -o IdentitiesOnly=yes -o ProxyJump=ubuntu@{{ spark_master_public_ip }}
           ansible_ssh_private_key_file: "{{ (osdataproc.public_key | regex_replace('\\.pub$', '')) | regex_replace('^~', lookup('env','HOME')) }}"
   tasks:
           - name: Wait max 600 seconds for target connection to become usable
