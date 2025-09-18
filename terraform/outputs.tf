@@ -7,6 +7,15 @@ resource "local_file" "ansible_inventory" {
   })
 }
 
+resource "local_file" "ansible_inventory_workers" {
+  filename        = "${path.root}/terraform.tfstate.d/${var.cluster_name}/hosts_workers"
+  file_permission = "0644"
+  content         = templatefile("ansible-inventory-workers.tpl", {
+    master_ip = module.networking.floating_ip,
+    worker_ips = module.networking.worker_ips
+  })
+}
+
 resource "local_file" "destroy_variables" {
   filename        = "${path.root}/terraform.tfstate.d/${var.cluster_name}/destroy.tfvars"
   file_permission = "0644"

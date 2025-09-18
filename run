@@ -80,6 +80,7 @@ case ${1} in
     terraform apply -input=false "terraform.tfstate.d/${2}/plan"
     terraform output -json > terraform.tfstate.d/${2}/outputs.json
     ansible "master"
+    ansible "workers"
     exit 0
     ;;
   # The debug option to rerun Ansible playbook on master node. Run with the fill path and the cluster name
