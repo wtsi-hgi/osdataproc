@@ -83,6 +83,11 @@
   with_fileglob:
           - ../templates/systemd/*.j2 
 
+- name: Reload systemd after installing Hadoop service units
+  become: yes
+  systemd:
+    daemon_reload: yes
+
 - name: Ensure netdata extra HDFS directories exist
   file:
           state: directory

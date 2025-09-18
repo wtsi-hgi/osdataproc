@@ -16,6 +16,19 @@
   become: yes
   service: name=yarn-rm state=started enabled=yes
 
+- name: Ensure MapReduce history directories exist
+  become: yes
+  file:
+    state: directory
+    path: "{{ item }}"
+    mode: '0755'
+    owner: "{{ hadoop_user }}"
+    group: "{{ hadoop_group }}"
+  loop:
+    - /mr-history
+    - /mr-history/tmp
+    - /mr-history/done
+
 - name: Start MapReduce JobHistory server
   become: yes
   service: name=mapred-history state=started enabled=yes
@@ -25,4 +38,3 @@
 
 - name: Create HDFS Spark log directory
   command: "{{ hadoop_home }}/bin/hdfs dfs -mkdir -p /shared/spark-logs"
-
