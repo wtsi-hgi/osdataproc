@@ -45,6 +45,12 @@ variable "netdata_api_key" {
   description = "Netdata API key"
 }
 
+variable "cloud_init_scripts_timeout" {
+  description = "Timeout for cloud-init scripts_user module in seconds"
+  type        = number
+  default     = 3600
+}
+
 locals {
   name_prefix = "${var.username}-${var.cluster_name}"
   with_lustre = var.lustre_network != ""

@@ -1,5 +1,19 @@
 data "cloudinit_config" "user_data" {
+  # Cloud-init configuration to set longer timeout for scripts_user module
   part {
+    content_type = "text/cloud-config"
+    content = yamlencode({
+      cloud_init_modules_config = {
+        scripts_user = {
+          timeout = var.cloud_init_scripts_timeout
+        }
+      }
+    })
+  }
+  
+  # User data script
+  part {
+    content_type = "text/x-shellscript"
     content = templatefile("user-data.sh.tpl", {
       # Master IP and worker nodes for /etc/hosts
       # FIXME Leaky abstraction
