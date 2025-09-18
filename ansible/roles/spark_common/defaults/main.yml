@@ -2,6 +2,9 @@
 spark_version: 3.5.3 # TODO: Merge with the main vars.yaml
 spark_mirror: https://archive.apache.org/dist/spark
 
+# Cache for pre-staged artifacts (S3-compatible, path-style). Override if needed.
+# cache_base_url: https://cog.sanger.ac.uk/osdataproc-cache
+
 spark_download_dir: /opt/osdataproc
 spark_install_dir: /opt/spark
 spark_conf_dir: "{{ spark_install_dir }}/conf"

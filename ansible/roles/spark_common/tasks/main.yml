@@ -17,12 +17,33 @@
           - "{{ spark_conf_dir }}"
 
 
-- name: Download Spark distribution
+- name: Use local Spark tarball if present
+  become: yes
+  copy:
+          src: "{{ osdataproc.downloads_dir | expanduser }}/spark-{{ spark_version }}-bin-without-hadoop.tgz"
+          dest: "{{ spark_download_dir }}/spark.tgz"
+          mode: '0644'
+  when: lookup('file', (osdataproc.downloads_dir | expanduser) ~ '/spark-' ~ spark_version ~ '-bin-without-hadoop.tgz', errors='ignore') | length > 0
+  tags: master
+
+# - name: Download Spark distribution from cache (if available)
+#   become: yes
+#   get_url:
+#           url: "{{ cache_base_url }}/spark-{{ spark_version }}-bin-without-hadoop.tgz"
+#           dest: "{{ spark_download_dir }}/spark.tgz"
+#           timeout: 60
+#   when: lookup('file', '/home/ubuntu/work/hail-cluster-openstack/downloads/spark-{{ spark_version }}-bin-without-hadoop.tgz', errors='ignore') | length == 0
+#   ignore_errors: yes
+#   register: spark_s3_get
+#   tags: master
+
+- name: Download Spark distribution (fallback)
   become: yes
   get_url:
           url: "{{ spark_mirror }}/spark-{{ spark_version }}/spark-{{ spark_version }}-bin-without-hadoop.tgz"
           dest: "{{ spark_download_dir }}/spark.tgz"
           timeout: 60
+  when: lookup('file', (osdataproc.downloads_dir | expanduser) ~ '/spark-' ~ spark_version ~ '-bin-without-hadoop.tgz', errors='ignore') | length == 0 and (spark_s3_get is not defined or spark_s3_get is failed)
   tags: master
 
 - name: Extract Spark distribution

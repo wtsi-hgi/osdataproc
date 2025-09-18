@@ -1,4 +1,4 @@
 ---
-spark_master_public_ip: "{{ ip_addresses | json_query('spark_master_public_ip.value') | join('') }}"
-spark_master_private_ip: "{{ ip_addresses | json_query('spark_master_private_ip.value') | join('') }}"
-spark_worker_private_ips: "{{ ip_addresses | json_query('spark_worker_private_ips.value') }}"
+spark_master_public_ip: "{{ (ip_addresses | default({})).spark_master_public_ip.value | default('') }}"
+spark_master_private_ip: "{{ (ip_addresses | default({})).spark_master_private_ip.value | default('') }}"
+spark_worker_private_ips: "{{ (ip_addresses | default({})).spark_worker_private_ips.value | default([]) }}"
