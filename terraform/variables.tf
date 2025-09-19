@@ -51,6 +51,11 @@ variable "cloud_init_scripts_timeout" {
   default     = 3600
 }
 
+variable "terraform_state_dir" {
+  description = "Directory for terraform state files (outside container)"
+  default     = "/tmp/terraform-state"
+}
+
 locals {
   name_prefix = "${var.username}-${var.cluster_name}"
   with_lustre = var.lustre_network != ""

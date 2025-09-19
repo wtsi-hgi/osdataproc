@@ -6,9 +6,14 @@
 set -e
 OSDP_HOME=$(dirname "$0")
 
+# Use external directory for terraform state files (outside container)
+export TF_STATE_DIR="${PWD}/terraform-state"
+mkdir -p "${TF_STATE_DIR}"
+
 export TF_IN_AUTOMATION=1 # Limit Terraform output
 export TF_VAR_username=$OS_USERNAME
 export TF_VAR_cluster_name=${2}
+export TF_VAR_terraform_state_dir=${TF_STATE_DIR}
 export TF_LOG="ERROR"
 export TF_LOG_PATH="terraform.log"
 # generate API key for netdata
@@ -56,12 +61,12 @@ ansible() {
   export ANSIBLE_HOST_KEY_CHECKING=False
   export ANSIBLE_CONFIG=${OSDP_HOME}/ansible/ansible.cfg
   ansible-playbook ${OSDP_HOME}/ansible/main.yml \
-                   -i ${OSDP_HOME}/terraform/terraform.tfstate.d/${TF_VAR_cluster_name}/hosts_${1} \
+                   -i ${TF_STATE_DIR}/terraform.tfstate.d/${TF_VAR_cluster_name}/hosts_${1} \
                    -e 'ansible_python_interpreter=/usr/bin/python3' \
                    -e '@../vars.yml' \
                    --limit spark_${1} \
                    2>&1 \
-  | tee ${OSDP_HOME}/terraform/terraform.tfstate.d/${TF_VAR_cluster_name}/ansible-${1}.log
+  | tee ${TF_STATE_DIR}/terraform.tfstate.d/${TF_VAR_cluster_name}/ansible-${1}.log
 }
 
 cd ${OSDP_HOME}/terraform
@@ -76,9 +81,9 @@ case ${1} in
     read -sr PASSWORD
     export PASSWORD=$PASSWORD
     terraform workspace select ${2} || terraform workspace new ${2}
-    terraform plan -out="terraform.tfstate.d/${2}/plan" -input=false
-    terraform apply -input=false "terraform.tfstate.d/${2}/plan"
-    terraform output -json > terraform.tfstate.d/${2}/outputs.json
+    terraform plan -out="${TF_STATE_DIR}/terraform.tfstate.d/${2}/plan" -input=false
+    terraform apply -input=false "${TF_STATE_DIR}/terraform.tfstate.d/${2}/plan"
+    terraform output -json > ${TF_STATE_DIR}/terraform.tfstate.d/${2}/outputs.json
     ansible "master"
     exit 0
     ;;
@@ -93,7 +98,7 @@ case ${1} in
       echo "Cluster not found"
     else
       terraform workspace select ${2}
-      terraform destroy -var-file=terraform.tfstate.d/${2}/destroy.tfvars
+      terraform destroy -var-file=${TF_STATE_DIR}/terraform.tfstate.d/${2}/destroy.tfvars
       terraform workspace select default
       terraform workspace delete ${2}
     fi
