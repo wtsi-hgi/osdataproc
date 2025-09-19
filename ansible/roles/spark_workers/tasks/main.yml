@@ -17,6 +17,13 @@
     name: "pyspark=={{ spark_version }}"
     state: present
 
+- name: Wait for Spark master to be ready
+  wait_for:
+    host: "{{ spark_master_private_ip }}"
+    port: 7077
+    delay: 10
+    timeout: 300
+
 - name: Start Spark worker
   service: name=spark-worker state=started enabled=yes
 

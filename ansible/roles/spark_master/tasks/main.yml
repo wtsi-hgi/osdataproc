@@ -25,6 +25,13 @@
 - name: Start Spark history server
   service: name=spark-history-server state=started enabled=yes
 
+- name: Wait for Spark master to be ready
+  wait_for:
+    host: "{{ ansible_default_ipv4.address }}"
+    port: 7077
+    delay: 5
+    timeout: 60
+
 - name: Update Python distribution utilities in venv
   become: yes
   become_user: "{{ spark_user }}"
