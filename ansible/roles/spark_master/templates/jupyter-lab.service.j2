@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Environment=SPARK_HOME={{ spark_home }}
-Environment=PYSPARK_PYTHON={{ venv_dir }}/bin/python
+Environment=PYSPARK_PYTHON=/usr/bin/python3
 ExecStart={{ venv_dir }}/bin/jupyter lab --config={{ home }}/.jupyter/jupyter_notebook_config.py
 User={{ user }}
 KillMode=process

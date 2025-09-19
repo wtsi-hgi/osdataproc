@@ -13,6 +13,12 @@
 - name: Start NFS server
   service: name=nfs-server state=started enabled=yes
 
+- name: Install PySpark on system Python
+  become: yes
+  pip:
+    name: "pyspark=={{ spark_version }}"
+    state: present
+
 - name: Start Spark master
   service: name=spark-master state=started enabled=yes
 

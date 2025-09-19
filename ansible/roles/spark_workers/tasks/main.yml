@@ -11,6 +11,12 @@
           keep_newer: yes
           remote_src: yes
 
+- name: Install PySpark on system Python
+  become: yes
+  pip:
+    name: "pyspark=={{ spark_version }}"
+    state: present
+
 - name: Start Spark worker
   service: name=spark-worker state=started enabled=yes
 
