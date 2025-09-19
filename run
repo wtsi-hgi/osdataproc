@@ -92,6 +92,9 @@ case ${1} in
     read -sr PASSWORD
     export PASSWORD=$PASSWORD
     create_workspace_structure ${2}
+    # Create workspace directory in external location and set TF_DATA_DIR
+    mkdir -p "${TF_STATE_DIR}/terraform.tfstate.d/${2}"
+    export TF_DATA_DIR="${TF_STATE_DIR}/.terraform"
     terraform workspace select ${2} || terraform workspace new ${2}
     terraform plan -out="${TF_STATE_DIR}/terraform.tfstate.d/${2}/plan" -input=false
     terraform apply -input=false "${TF_STATE_DIR}/terraform.tfstate.d/${2}/plan"
