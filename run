@@ -73,12 +73,13 @@ ansible() {
 create_workspace_structure() {
     local workspace_name=$1
     mkdir -p "${TF_STATE_DIR}/terraform.tfstate.d/${workspace_name}"
-    # Create symlink in terraform directory to point to external location
-    ln -sf "${TF_STATE_DIR}/terraform.tfstate.d" "${OSDP_HOME}/terraform/terraform.tfstate.d"
+    # Set TF_DATA_DIR to point to external location for terraform state
+    export TF_DATA_DIR="${TF_STATE_DIR}/.terraform"
 }
 
-# Set terraform data directory before changing directories
+# Set terraform data directory and state directory before changing directories
 export TF_DATA_DIR="${TF_STATE_DIR}/.terraform"
+export TF_CLI_ARGS="-state-dir=${TF_STATE_DIR}/terraform.tfstate.d"
 # Change to terraform directory but use external state directory
 cd ${OSDP_HOME}/terraform
 case ${1} in
