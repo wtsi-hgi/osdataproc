@@ -69,6 +69,14 @@ ansible() {
   | tee ${TF_STATE_DIR}/terraform.tfstate.d/${TF_VAR_cluster_name}/ansible-${1}.log
 }
 
+# Function to create workspace directory structure in external location
+create_workspace_structure() {
+    local workspace_name=$1
+    mkdir -p "${TF_STATE_DIR}/terraform.tfstate.d/${workspace_name}"
+    # Create symlink in terraform directory to point to external location
+    ln -sf "${TF_STATE_DIR}/terraform.tfstate.d" "${OSDP_HOME}/terraform/terraform.tfstate.d"
+}
+
 # Set terraform data directory before changing directories
 export TF_DATA_DIR="${TF_STATE_DIR}/.terraform"
 # Change to terraform directory but use external state directory
@@ -83,6 +91,7 @@ case ${1} in
     echo "Password for web authentication and encrypted volume: "
     read -sr PASSWORD
     export PASSWORD=$PASSWORD
+    create_workspace_structure ${2}
     terraform workspace select ${2} || terraform workspace new ${2}
     terraform plan -out="${TF_STATE_DIR}/terraform.tfstate.d/${2}/plan" -input=false
     terraform apply -input=false "${TF_STATE_DIR}/terraform.tfstate.d/${2}/plan"
