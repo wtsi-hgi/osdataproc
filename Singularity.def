@@ -50,11 +50,5 @@ From: python:3.8-slim
     osdataproc --help
 
 %runscript
-    # Mount external terraform state directory if it exists
-    if [ -d "/tmp/terraform-state" ]; then
-        mkdir -p /opt/osdataproc/terraform/terraform-state
-        mount --bind /tmp/terraform-state /opt/osdataproc/terraform/terraform-state
-    fi
     exec osdataproc "$@"
-
 
