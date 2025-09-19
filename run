@@ -69,9 +69,10 @@ ansible() {
   | tee ${TF_STATE_DIR}/terraform.tfstate.d/${TF_VAR_cluster_name}/ansible-${1}.log
 }
 
+# Set terraform data directory before changing directories
+export TF_DATA_DIR="${TF_STATE_DIR}/.terraform"
 # Change to terraform directory but use external state directory
 cd ${OSDP_HOME}/terraform
-export TF_DATA_DIR="${TF_STATE_DIR}/.terraform"
 case ${1} in
   init)
     terraform init -input=false
