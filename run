@@ -7,7 +7,7 @@ set -e
 OSDP_HOME=$(dirname "$0")
 
 # Use external directory for terraform state files (outside container)
-export TF_STATE_DIR="${PWD}/terraform-state"
+export TF_STATE_DIR="/tmp/terraform-state"
 mkdir -p "${TF_STATE_DIR}"
 
 export TF_IN_AUTOMATION=1 # Limit Terraform output
