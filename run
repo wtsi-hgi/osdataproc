@@ -63,7 +63,7 @@ ansible() {
   ansible-playbook ${OSDP_HOME}/ansible/main.yml \
                    -i ${TF_STATE_DIR}/terraform.tfstate.d/${TF_VAR_cluster_name}/hosts_${1} \
                    -e 'ansible_python_interpreter=/usr/bin/python3' \
-                   -e '@../vars.yml' \
+                   -e "@${OSDP_HOME}/vars.yml" \
                    --limit spark_${1} \
                    2>&1 \
   | tee ${TF_STATE_DIR}/terraform.tfstate.d/${TF_VAR_cluster_name}/ansible-${1}.log
