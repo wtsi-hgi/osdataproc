@@ -75,6 +75,8 @@ create_workspace_structure() {
     mkdir -p "${TF_STATE_DIR}/terraform.tfstate.d/${workspace_name}"
     # Set TF_DATA_DIR to point to external location for terraform state
     export TF_DATA_DIR="${TF_STATE_DIR}/.terraform"
+    # Create symlink from terraform directory to external workspace directory
+    ln -sf "${TF_STATE_DIR}/terraform.tfstate.d" "${OSDP_HOME}/terraform/terraform.tfstate.d"
 }
 
 # Set terraform data directory before changing directories
