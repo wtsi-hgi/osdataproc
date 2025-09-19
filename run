@@ -15,7 +15,7 @@ export TF_VAR_username=$OS_USERNAME
 export TF_VAR_cluster_name=${2}
 export TF_VAR_terraform_state_dir=${TF_STATE_DIR}
 export TF_LOG="ERROR"
-export TF_LOG_PATH="terraform.log"
+export TF_LOG_PATH="${TF_STATE_DIR}/terraform.log"
 # generate API key for netdata
 export NETDATA_API_KEY=$(uuidgen)
 export TF_VAR_netdata_api_key=${NETDATA_API_KEY}
@@ -69,7 +69,9 @@ ansible() {
   | tee ${TF_STATE_DIR}/terraform.tfstate.d/${TF_VAR_cluster_name}/ansible-${1}.log
 }
 
+# Change to terraform directory but use external state directory
 cd ${OSDP_HOME}/terraform
+export TF_DATA_DIR="${TF_STATE_DIR}/.terraform"
 case ${1} in
   init)
     terraform init -input=false
