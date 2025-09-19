@@ -82,7 +82,7 @@ case ${1} in
     echo "Password for web authentication and encrypted volume: "
     read -sr PASSWORD
     export PASSWORD=$PASSWORD
-    terraform workspace select ${2} || terraform workspace new ${2}
+    terraform workspace select ${2} -or-create
     terraform plan -out="${TF_STATE_DIR}/terraform.tfstate.d/${2}/plan" -input=false
     terraform apply -input=false "${TF_STATE_DIR}/terraform.tfstate.d/${2}/plan"
     terraform output -json > ${TF_STATE_DIR}/terraform.tfstate.d/${2}/outputs.json
@@ -99,7 +99,6 @@ case ${1} in
     if ! terraform workspace select ${2} ; then
       echo "Cluster not found"
     else
-      terraform workspace select ${2}
       terraform destroy -var-file=${TF_STATE_DIR}/terraform.tfstate.d/${2}/destroy.tfvars
       terraform workspace select default
       terraform workspace delete ${2}
