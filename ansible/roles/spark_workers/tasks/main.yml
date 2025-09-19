@@ -1,5 +1,13 @@
 ---
 
+- name: Mount Spark download directory
+  become: yes
+  mount:
+          path: "{{ spark_download_dir }}"
+          src: "{{ spark_master_private_ip }}:{{ spark_download_dir }}"
+          fstype: nfs
+          state: mounted
+
 - name: Extract Spark distribution
   become: yes
   unarchive:
