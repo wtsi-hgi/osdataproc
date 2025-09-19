@@ -1,8 +1,10 @@
 [Unit]
 Description=Spark Worker
-After=network.target
+After=network.target network-online.target
+Wants=network-online.target
 
 [Service]
+Type=forking
 Environment=SPARK_HOME={{ spark_home }}
 WorkingDirectory={{ spark_home }}
 ExecStart={{ spark_home }}/sbin/start-slave.sh spark://{{ spark_master_private_ip }}:{{ spark_master_port }}
@@ -10,6 +12,7 @@ User={{ user }}
 KillMode=process
 KillSignal=SIGINT
 Restart=on-failure
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target

@@ -32,6 +32,28 @@
     delay: 10
     timeout: 300
 
+- name: Create systemd override directory for spark-worker
+  become: yes
+  file:
+    path: /etc/systemd/system/spark-worker.service.d
+    state: directory
+    mode: '0755'
+
+- name: Create systemd override for spark-worker
+  become: yes
+  copy:
+    content: |
+      [Unit]
+      After=multi-user.target
+      Wants=multi-user.target
+    dest: /etc/systemd/system/spark-worker.service.d/override.conf
+    mode: '0644'
+
+- name: Reload systemd daemon
+  become: yes
+  systemd:
+    daemon_reload: yes
+
 - name: Start Spark worker
   service: name=spark-worker state=started enabled=yes
 

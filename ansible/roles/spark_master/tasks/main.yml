@@ -19,6 +19,28 @@
     name: "pyspark=={{ spark_version }}"
     state: present
 
+- name: Create systemd override directory for spark-master
+  become: yes
+  file:
+    path: /etc/systemd/system/spark-master.service.d
+    state: directory
+    mode: '0755'
+
+- name: Create systemd override for spark-master
+  become: yes
+  copy:
+    content: |
+      [Unit]
+      After=multi-user.target
+      Wants=multi-user.target
+    dest: /etc/systemd/system/spark-master.service.d/override.conf
+    mode: '0644'
+
+- name: Reload systemd daemon
+  become: yes
+  systemd:
+    daemon_reload: yes
+
 - name: Start Spark master
   service: name=spark-master state=started enabled=yes
 
