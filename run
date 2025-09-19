@@ -83,7 +83,7 @@ export TF_DATA_DIR="${TF_STATE_DIR}/.terraform"
 cd ${OSDP_HOME}/terraform
 case ${1} in
   init)
-    terraform init -migrate-state -input=false -auto-approve
+    terraform init -migrate-state -input=false -force-copy
     ;;
   apply)
     trap cleanup ERR
