@@ -246,6 +246,7 @@ def cli():
     )
 
     # Merge top-level settings into the args passed to subcommands
+    # Command line arguments should take priority over vars.yml defaults
     merged = dict(defaults["osdataproc"])
     for key in [
         "hadoop_version",
@@ -254,7 +255,8 @@ def cli():
         "spark_mirror",
         "downloads_dir",
     ]:
-        if key in defaults:
+        # Only use top-level defaults if the key wasn't set via command line
+        if key in defaults and key not in merged:
             merged[key] = defaults[key]
 
     args.func(merged)
