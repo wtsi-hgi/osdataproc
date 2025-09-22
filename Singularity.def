@@ -45,6 +45,11 @@ From: python:3.8-slim
     printf '#!/bin/sh\nexec python3 /opt/osdataproc/osdataproc.py "$@"\n' > /usr/local/bin/osdataproc
     chmod +x /usr/local/bin/osdataproc
 
+    # Remove any local terraform state and provider cache from the image
+    # These are environment/state artifacts and must not be baked into the SIF
+    rm -rf /opt/osdataproc/terraform/terraform.tfstate.d || true
+    rm -rf /opt/osdataproc/terraform/.terraform || true
+
 %files
     . /opt/osdataproc
 
