@@ -89,11 +89,6 @@ create_workspace_structure() {
 export TF_DATA_DIR="${TF_STATE_DIR}/.terraform"
 # Copy terraform configuration to external directory and work from there
 cp -r ${OSDP_HOME}/terraform/* ${TF_STATE_DIR}/
-# Copy terraform providers if they exist
-if [ -d "${OSDP_HOME}/terraform/.terraform" ] ; then
-  mkdir -p "${TF_STATE_DIR}/.terraform"
-  cp -r ${OSDP_HOME}/terraform/.terraform/* ${TF_STATE_DIR}/.terraform/ 2>/dev/null || true
-fi
 cd ${TF_STATE_DIR}
 case ${1} in
   init)
