@@ -7,7 +7,7 @@ osdataproc:
   public_key: ~/.ssh/id_rsa.pub
   flavour: m2.medium
   ## Local cache directory for pre-downloaded artifacts (Spark/Hadoop)
-  downloads_dir: /tmp/osdataproc-cache
+  downloads_dir: /nfs/hgi/osdataproc-cache
   network_name: cloudforms_network
   lustre_network:
   image_name: bionic-server

@@ -28,7 +28,7 @@
           src: "{{ osdataproc.downloads_dir | expanduser }}/hadoop-{{ hadoop_version }}.tar.gz"
           dest: "{{ hadoop_download_dir }}/hadoop.tar.gz"
           mode: '0644'
-  when: (lookup('file', (osdataproc.downloads_dir | expanduser) ~ '/hadoop-' ~ hadoop_version ~ '.tar.gz', errors='ignore') | default('')) | length > 0
+  when: (lookup('file', osdataproc.downloads_dir ~ '/hadoop-' ~ hadoop_version ~ '.tar.gz', errors='ignore') | default('')) | length > 0
   tags: master
 
 # - name: Download Hadoop distribution from S3 cache (if available)
@@ -48,7 +48,7 @@
           url: "{{ hadoop_mirror }}/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz"
           dest: "{{ hadoop_download_dir }}/hadoop.tar.gz"
           timeout: 60
-  when: (lookup('file', (osdataproc.downloads_dir | expanduser) ~ '/hadoop-' ~ hadoop_version ~ '.tar.gz', errors='ignore') | default('')) | length == 0 and (hadoop_s3_get is not defined or hadoop_s3_get is failed)
+  when: (lookup('file', osdataproc.downloads_dir  ~ '/hadoop-' ~ hadoop_version ~ '.tar.gz', errors='ignore') | default('')) | length == 0 and (hadoop_s3_get is not defined or hadoop_s3_get is failed)
   tags: master
 
 - name: Extract Hadoop distribution
