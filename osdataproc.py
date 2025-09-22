@@ -241,13 +241,19 @@ def cli():
     osdataproc_home = os.path.dirname(os.path.realpath(__file__))
     with open(f"{osdataproc_home}/vars.yml", "r") as stream:
         defaults = yaml.safe_load(stream)
-    defaults["osdataproc"].update(
-        {k: v for k, v in vars(args).items() if v is not None}
-    )
 
-    # Merge top-level settings into the args passed to subcommands
-    # Command line arguments should take priority over vars.yml defaults
+    # Build overrides from CLI where provided (CLI should take precedence)
+    cli_overrides = {k: v for k, v in vars(args).items() if v is not None}
+    # Map argparse names to vars.yml keys where they differ
+    if "cluster_name" in cli_overrides:
+        cli_overrides["cluster-name"] = cli_overrides.pop("cluster_name")
+    if "flavor" in cli_overrides and "flavour" not in cli_overrides:
+        # Normalise American spelling if ever present
+        cli_overrides["flavour"] = cli_overrides.pop("flavor")
+
+    # Start from defaults and apply CLI overrides last (priority)
     merged = dict(defaults["osdataproc"])
+    merged.update(cli_overrides)
     for key in [
         "hadoop_version",
         "spark_version",
@@ -255,8 +261,7 @@ def cli():
         "spark_mirror",
         "downloads_dir",
     ]:
-        # Only use top-level defaults if the key wasn't set via command line
-        if key in defaults and key not in merged:
+        if key in defaults:
             merged[key] = defaults[key]
 
     args.func(merged)
