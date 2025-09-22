@@ -5,7 +5,7 @@
   gather_facts: no
   vars:
           ansible_ssh_common_args: -o IdentitiesOnly=yes
-          ansible_ssh_private_key_file: "{{ ansible_ssh_private_key_file | default((osdataproc.public_key | regex_replace('\\.pub$', '')) | regex_replace('^~', lookup('env','HOME'))) }}"
+          ansible_ssh_private_key_file: "{{ (osdataproc.public_key | regex_replace('\\.pub$', '')) | regex_replace('^~', lookup('env','HOME')) }}"
   tasks:
           - name: Wait max 600 seconds for target connection to become usable
             wait_for_connection:
@@ -18,7 +18,7 @@
   gather_facts: no
   vars:
           ansible_ssh_common_args: -o IdentitiesOnly=yes
-          ansible_ssh_private_key_file: "{{ ansible_ssh_private_key_file | default((osdataproc.public_key | regex_replace('\\.pub$', '')) | regex_replace('^~', lookup('env','HOME'))) }}"
+          ansible_ssh_private_key_file: "{{ (osdataproc.public_key | regex_replace('\\.pub$', '')) | regex_replace('^~', lookup('env','HOME')) }}"
   tasks:
           - name: Wait max 600 seconds for target connection to become usable
             wait_for_connection:

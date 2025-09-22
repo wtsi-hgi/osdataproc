@@ -68,10 +68,6 @@ get_apply_vars () {
 ansible() {
   export ANSIBLE_HOST_KEY_CHECKING=False
   export ANSIBLE_CONFIG=${OSDP_HOME}/ansible/ansible.cfg
-  # Set the private key path for ansible if it exists
-  if [ -n "${ANSIBLE_SSH_PRIVATE_KEY_FILE:-}" ] ; then
-    export ansible_ssh_private_key_file="${ANSIBLE_SSH_PRIVATE_KEY_FILE}"
-  fi
   ansible-playbook ${OSDP_HOME}/ansible/main.yml \
                    -i ${TF_STATE_DIR}/terraform.tfstate.d/${TF_VAR_cluster_name}/hosts_${1} \
                    -e 'ansible_python_interpreter=/usr/bin/python3' \
