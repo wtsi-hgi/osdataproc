@@ -13,6 +13,11 @@ if [ -z "${TF_STATE_DIR:-}" ] ; then
 fi
 mkdir -p "${TF_STATE_DIR}"
 
+# if the vars.yml does not exist, copy it from the OSDP_HOME
+if [ ! -f "${TF_STATE_DIR}/vars.yml" ] ; then
+  cp "${OSDP_HOME}/vars.yml" "${TF_STATE_DIR}/vars.yml"
+fi
+
 export TF_IN_AUTOMATION=1 # Limit Terraform output
 export TF_VAR_username=$OS_USERNAME
 export TF_VAR_cluster_name=${2}
@@ -84,6 +89,11 @@ create_workspace_structure() {
 export TF_DATA_DIR="${TF_STATE_DIR}/.terraform"
 # Copy terraform configuration to external directory and work from there
 cp -r ${OSDP_HOME}/terraform/* ${TF_STATE_DIR}/
+# Copy terraform providers if they exist
+if [ -d "${OSDP_HOME}/terraform/.terraform" ] ; then
+  mkdir -p "${TF_STATE_DIR}/.terraform"
+  cp -r ${OSDP_HOME}/terraform/.terraform/* ${TF_STATE_DIR}/.terraform/ 2>/dev/null || true
+fi
 cd ${TF_STATE_DIR}
 case ${1} in
   init)
