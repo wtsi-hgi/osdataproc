@@ -7,7 +7,10 @@ set -e
 OSDP_HOME=$(dirname "$0")
 
 # Use external directory for terraform state files (outside container)
-# TF_STATE_DIR is set in Singularity.def environment section
+# Prefer caller's CWD when TF_STATE_DIR is not preset
+if [ -z "${TF_STATE_DIR:-}" ] ; then
+  export TF_STATE_DIR="${PWD}/terraform-state"
+fi
 mkdir -p "${TF_STATE_DIR}"
 
 export TF_IN_AUTOMATION=1 # Limit Terraform output

@@ -4,10 +4,10 @@ osdataproc:
   cluster-name:
   num_workers: 2
   ## Path to public key file
-  public_key: ~/.ssh/id_ed25519.pub
+  public_key: ~/.ssh/id_rsa.pub
   flavour: m2.medium
   ## Local cache directory for pre-downloaded artifacts (Spark/Hadoop)
-  downloads_dir: ~/work/hail-cluster-openstack/downloads
+  downloads_dir: /tmp/osdataproc-cache
   network_name: cloudforms_network
   lustre_network:
   image_name: bionic-server

@@ -8,9 +8,8 @@ import time
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
-import yaml
-
 import volumes
+import yaml
 
 
 def _download_with_progress(url: str, dest_path: str) -> None:
@@ -42,10 +41,12 @@ def _download_with_progress(url: str, dest_path: str) -> None:
                             progress = f"{percent:6.2f}%"
                             total_mb = total_size / (1024 * 1024)
                             read_mb = bytes_read / (1024 * 1024)
-                            line = f"  {progress}  {read_mb:,.1f}/{total_mb:,.1f} MiB  {speed/1_000_000:,.2f} MB/s"
+                            line = f"  {progress}  {read_mb:,.1f}/{total_mb:,.1f} MiB  {speed / 1_000_000:,.2f} MB/s"
                         else:
                             read_mb = bytes_read / (1024 * 1024)
-                            line = f"  {read_mb:,.1f} MiB  {speed/1_000_000:,.2f} MB/s"
+                            line = (
+                                f"  {read_mb:,.1f} MiB  {speed / 1_000_000:,.2f} MB/s"
+                            )
                         print("\r" + line, end="", flush=True)
                         last_update = now
 
@@ -66,10 +67,9 @@ def ensure_pre_downloads(config):
     Download Hadoop and Spark artifacts to a local cache before the pipeline runs.
     This allows Ansible to use local files instead of downloading on the master.
     """
+
     downloads_dir = os.path.expanduser(
-        config.get(
-            "downloads_dir", "/home/ubuntu/work/hail-cluster-openstack/downloads"
-        )
+        config.get("downloads_dir", "/tmp/osdataproc-cache")
     )
     os.makedirs(downloads_dir, exist_ok=True)
 

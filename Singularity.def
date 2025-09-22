@@ -9,7 +9,7 @@ From: python:3.8-slim
     export PYTHONDONTWRITEBYTECODE=1
     export PYTHONUNBUFFERED=1
     export PATH=/usr/local/bin:$PATH
-    export TF_STATE_DIR=/tmp/terraform-state
+    export TF_STATE_DIR=$PWD/terraform-state
 
 %post
     set -e
