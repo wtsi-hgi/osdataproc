@@ -147,6 +147,30 @@ def act(args, command):
     osdataproc_home = os.path.dirname(os.path.realpath(__file__))
     run_args = get_args(args, command)
     subprocess.run([f"{osdataproc_home}/run", "init"])
+    # Ensure the CLI-provided public key is injected into vars.yml for Ansible
+    # This mirrors/augments the injection performed in the run script and ensures
+    # correctness even when vars.yml already exists from a previous run.
+    try:
+        tf_state_dir = os.environ.get(
+            "TF_STATE_DIR", os.path.join(os.getcwd(), "terraform-state")
+        )
+        os.makedirs(tf_state_dir, exist_ok=True)
+        vars_path = os.path.join(tf_state_dir, "vars.yml")
+        data = {}
+        try:
+            with open(vars_path, "r") as f:
+                data = yaml.safe_load(f) or {}
+        except FileNotFoundError:
+            # vars.yml will be created by run/init copy if missing; we still write our override
+            data = {}
+        osd = data.get("osdataproc") or {}
+        if args.get("public_key"):
+            osd["public_key"] = args["public_key"]
+            data["osdataproc"] = osd
+            with open(vars_path, "w") as f:
+                yaml.safe_dump(data, f, default_flow_style=False, sort_keys=False)
+    except Exception as e:
+        print(f"Warning: could not inject public_key into vars.yml: {e}")
     subprocess.run(run_args)
 
 
