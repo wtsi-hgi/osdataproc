@@ -8,9 +8,8 @@ import time
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
-import yaml
-
 import volumes
+import yaml
 
 
 def _download_with_progress(url: str, dest_path: str) -> None:
@@ -42,10 +41,12 @@ def _download_with_progress(url: str, dest_path: str) -> None:
                             progress = f"{percent:6.2f}%"
                             total_mb = total_size / (1024 * 1024)
                             read_mb = bytes_read / (1024 * 1024)
-                            line = f"  {progress}  {read_mb:,.1f}/{total_mb:,.1f} MiB  {speed/1_000_000:,.2f} MB/s"
+                            line = f"  {progress}  {read_mb:,.1f}/{total_mb:,.1f} MiB  {speed / 1_000_000:,.2f} MB/s"
                         else:
                             read_mb = bytes_read / (1024 * 1024)
-                            line = f"  {read_mb:,.1f} MiB  {speed/1_000_000:,.2f} MB/s"
+                            line = (
+                                f"  {read_mb:,.1f} MiB  {speed / 1_000_000:,.2f} MB/s"
+                            )
                         print("\r" + line, end="", flush=True)
                         last_update = now
 
@@ -66,10 +67,9 @@ def ensure_pre_downloads(config):
     Download Hadoop and Spark artifacts to a local cache before the pipeline runs.
     This allows Ansible to use local files instead of downloading on the master.
     """
+
     downloads_dir = os.path.expanduser(
-        config.get(
-            "downloads_dir", "/home/ubuntu/work/hail-cluster-openstack/downloads"
-        )
+        config.get("downloads_dir", "/tmp/osdataproc-cache")
     )
     os.makedirs(downloads_dir, exist_ok=True)
 
@@ -147,6 +147,30 @@ def act(args, command):
     osdataproc_home = os.path.dirname(os.path.realpath(__file__))
     run_args = get_args(args, command)
     subprocess.run([f"{osdataproc_home}/run", "init"])
+    # Ensure the CLI-provided public key is injected into vars.yml for Ansible
+    # This mirrors/augments the injection performed in the run script and ensures
+    # correctness even when vars.yml already exists from a previous run.
+    try:
+        tf_state_dir = os.environ.get(
+            "TF_STATE_DIR", os.path.join(os.getcwd(), "terraform-state")
+        )
+        os.makedirs(tf_state_dir, exist_ok=True)
+        vars_path = os.path.join(tf_state_dir, "vars.yml")
+        data = {}
+        try:
+            with open(vars_path, "r") as f:
+                data = yaml.safe_load(f) or {}
+        except FileNotFoundError:
+            # vars.yml will be created by run/init copy if missing; we still write our override
+            data = {}
+        osd = data.get("osdataproc") or {}
+        if args.get("public_key"):
+            osd["public_key"] = args["public_key"]
+            data["osdataproc"] = osd
+            with open(vars_path, "w") as f:
+                yaml.safe_dump(data, f, default_flow_style=False, sort_keys=False)
+    except Exception as e:
+        print(f"Warning: could not inject public_key into vars.yml: {e}")
     subprocess.run(run_args)
 
 
@@ -241,12 +265,19 @@ def cli():
     osdataproc_home = os.path.dirname(os.path.realpath(__file__))
     with open(f"{osdataproc_home}/vars.yml", "r") as stream:
         defaults = yaml.safe_load(stream)
-    defaults["osdataproc"].update(
-        {k: v for k, v in vars(args).items() if v is not None}
-    )
 
-    # Merge top-level settings into the args passed to subcommands
+    # Build overrides from CLI where provided (CLI should take precedence)
+    cli_overrides = {k: v for k, v in vars(args).items() if v is not None}
+    # Map argparse names to vars.yml keys where they differ
+    if "cluster_name" in cli_overrides:
+        cli_overrides["cluster-name"] = cli_overrides.pop("cluster_name")
+    if "flavor" in cli_overrides and "flavour" not in cli_overrides:
+        # Normalise American spelling if ever present
+        cli_overrides["flavour"] = cli_overrides.pop("flavor")
+
+    # Start from defaults and apply CLI overrides last (priority)
     merged = dict(defaults["osdataproc"])
+    merged.update(cli_overrides)
     for key in [
         "hadoop_version",
         "spark_version",

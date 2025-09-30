@@ -1,0 +1,61 @@
+Bootstrap: docker
+From: python:3.8-slim
+
+%labels
+    Maintainer osdataproc-container
+
+%environment
+    export PIP_NO_CACHE_DIR=1
+    export PYTHONDONTWRITEBYTECODE=1
+    export PYTHONUNBUFFERED=1
+    export PATH=/usr/local/bin:$PATH
+    export TF_STATE_DIR=$PWD/terraform-state
+
+%post
+    set -e
+    apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        libffi-dev \
+        libssl-dev \
+        ca-certificates \
+        curl \
+        unzip \
+        gnupg \
+        uuid-runtime \
+        openssh-client \
+    && rm -rf /var/lib/apt/lists/*
+
+    pip install --no-cache-dir \
+        ansible==2.9.4 \
+        Jinja2==3.0.3 \
+        jmespath==0.9.4 \
+        python-openstackclient==5.2.0 \
+        openstacksdk==0.46.0
+
+    # Install Terraform (binary)
+    TF_VERSION=1.5.7
+    TF_ARCH=$(dpkg --print-architecture)
+    curl -fsSL -o /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_${TF_ARCH}.zip"
+    unzip /tmp/terraform.zip -d /usr/local/bin
+    chmod +x /usr/local/bin/terraform
+    rm -f /tmp/terraform.zip
+
+    # CLI shim to run with co-located vars.yml
+    printf '#!/bin/sh\nexec python3 /opt/osdataproc/osdataproc.py "$@"\n' > /usr/local/bin/osdataproc
+    chmod +x /usr/local/bin/osdataproc
+
+    # Remove any local terraform state and provider cache from the image
+    # These are environment/state artifacts and must not be baked into the SIF
+    rm -rf /opt/osdataproc/terraform/terraform.tfstate.d || true
+    rm -rf /opt/osdataproc/terraform/.terraform || true
+
+%files
+    . /opt/osdataproc
+
+%help
+    osdataproc --help
+
+%runscript
+    exec osdataproc "$@"
+

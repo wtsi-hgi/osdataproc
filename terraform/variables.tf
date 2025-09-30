@@ -48,7 +48,12 @@ variable "netdata_api_key" {
 variable "cloud_init_scripts_timeout" {
   description = "Timeout for cloud-init scripts_user module in seconds"
   type        = number
-  default     = 3600
+  default     = 21600
+}
+
+variable "terraform_state_dir" {
+  description = "Directory for terraform state files (outside container)"
+  default     = "/tmp/terraform-state"
 }
 
 locals {

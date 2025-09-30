@@ -8,10 +8,19 @@ data "cloudinit_config" "user_data" {
           timeout = var.cloud_init_scripts_timeout
         }
       }
+      # Add better error handling
+      cloud_final_modules = [
+        "scripts-user",
+        "final-message",
+        "power-state-change"
+      ]
+      # Disable automatic updates during cloud-init to avoid conflicts
+      package_update = false
+      package_upgrade = false
     })
   }
   
-  # User data script
+  # User data script with better error handling
   part {
     content_type = "text/x-shellscript"
     content = templatefile("user-data.sh.tpl", {

@@ -168,3 +168,4 @@ cython_debug/
 .terraform/
 .terraform.lock.hcl
 terraform.tfstate.d/
+osdataproc.sif
