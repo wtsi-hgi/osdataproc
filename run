@@ -6,11 +6,24 @@
 set -e
 OSDP_HOME=$(dirname "$0")
 
+# Use external directory for terraform state files (outside container)
+# Prefer caller's CWD when TF_STATE_DIR is not preset
+if [ -z "${TF_STATE_DIR:-}" ] ; then
+  export TF_STATE_DIR="${PWD}/terraform-state"
+fi
+mkdir -p "${TF_STATE_DIR}"
+
+# if the vars.yml does not exist, copy it from the OSDP_HOME
+if [ ! -f "${TF_STATE_DIR}/vars.yml" ] ; then
+  cp "${OSDP_HOME}/vars.yml" "${TF_STATE_DIR}/vars.yml"
+fi
+
 export TF_IN_AUTOMATION=1 # Limit Terraform output
 export TF_VAR_username=$OS_USERNAME
 export TF_VAR_cluster_name=${2}
+export TF_VAR_terraform_state_dir=${TF_STATE_DIR}
 export TF_LOG="ERROR"
-export TF_LOG_PATH="terraform.log"
+export TF_LOG_PATH="${TF_STATE_DIR}/terraform.log"
 # generate API key for netdata
 export NETDATA_API_KEY=$(uuidgen)
 export TF_VAR_netdata_api_key=${NETDATA_API_KEY}
@@ -37,6 +50,8 @@ get_apply_vars () {
   keyfile="${4/#\~/$HOME}" # expand tilde to $HOME
   if [[ -f ${keyfile} ]] ; then
     export TF_VAR_identity_file=$(< ${keyfile})
+    # Also export for downstream vars.yml override
+    export PROVIDED_PUBLIC_KEY_PATH=${keyfile}
   else
     echo "The file could not be found. Please enter a valid path to a public key."
     exit 1
@@ -56,15 +71,27 @@ ansible() {
   export ANSIBLE_HOST_KEY_CHECKING=False
   export ANSIBLE_CONFIG=${OSDP_HOME}/ansible/ansible.cfg
   ansible-playbook ${OSDP_HOME}/ansible/main.yml \
-                   -i ${OSDP_HOME}/terraform/terraform.tfstate.d/${TF_VAR_cluster_name}/hosts_${1} \
+                   -i ${TF_STATE_DIR}/terraform.tfstate.d/${TF_VAR_cluster_name}/hosts_${1} \
                    -e 'ansible_python_interpreter=/usr/bin/python3' \
-                   -e '@../vars.yml' \
+                   -e "@${TF_STATE_DIR}/vars.yml" \
                    --limit spark_${1} \
                    2>&1 \
-  | tee ${OSDP_HOME}/terraform/terraform.tfstate.d/${TF_VAR_cluster_name}/ansible-${1}.log
+  | tee ${TF_STATE_DIR}/terraform.tfstate.d/${TF_VAR_cluster_name}/ansible-${1}.log
 }
 
-cd ${OSDP_HOME}/terraform
+# Function to create workspace directory structure in external location
+create_workspace_structure() {
+    local workspace_name=$1
+    mkdir -p "${TF_STATE_DIR}/terraform.tfstate.d/${workspace_name}"
+    # Set TF_DATA_DIR to point to external location for terraform state
+    export TF_DATA_DIR="${TF_STATE_DIR}/.terraform"
+}
+
+# Set terraform data directory before changing directories
+export TF_DATA_DIR="${TF_STATE_DIR}/.terraform"
+# Copy terraform configuration to external directory and work from there
+cp -r ${OSDP_HOME}/terraform/* ${TF_STATE_DIR}/
+cd ${TF_STATE_DIR}
 case ${1} in
   init)
     terraform init -input=false
@@ -72,13 +99,39 @@ case ${1} in
   apply)
     trap cleanup ERR
     get_apply_vars $@
+    # Ensure Ansible receives the CLI public key via vars.yml override
+    python3 - <<'PY' || true
+import os, sys
+try:
+    import yaml
+except Exception as e:
+    print(f"WARNING: PyYAML not available, skipping vars.yml update: {e}")
+    sys.exit(0)
+tf_state_dir = os.environ.get('TF_STATE_DIR')
+pub_key = os.environ.get('PROVIDED_PUBLIC_KEY_PATH')
+if not tf_state_dir or not pub_key:
+    sys.exit(0)
+vars_path = os.path.join(tf_state_dir, 'vars.yml')
+try:
+    with open(vars_path, 'r') as f:
+        data = yaml.safe_load(f) or {}
+except FileNotFoundError:
+    data = {}
+osd = data.get('osdataproc') or {}
+osd['public_key'] = pub_key
+data['osdataproc'] = osd
+with open(vars_path, 'w') as f:
+    yaml.safe_dump(data, f, default_flow_style=False, sort_keys=False)
+print(f"Injected public_key into {vars_path}")
+PY
     echo "Password for web authentication and encrypted volume: "
     read -sr PASSWORD
     export PASSWORD=$PASSWORD
+    create_workspace_structure ${2}
     terraform workspace select ${2} || terraform workspace new ${2}
-    terraform plan -out="terraform.tfstate.d/${2}/plan" -input=false
-    terraform apply -input=false "terraform.tfstate.d/${2}/plan"
-    terraform output -json > terraform.tfstate.d/${2}/outputs.json
+    terraform plan -out="${TF_STATE_DIR}/terraform.tfstate.d/${2}/plan" -input=false
+    terraform apply -input=false "${TF_STATE_DIR}/terraform.tfstate.d/${2}/plan"
+    terraform output -json > ${TF_STATE_DIR}/terraform.tfstate.d/${2}/outputs.json
     ansible "master"
     ansible "workers"
     exit 0
@@ -93,8 +146,7 @@ case ${1} in
     if ! terraform workspace select ${2} ; then
       echo "Cluster not found"
     else
-      terraform workspace select ${2}
-      terraform destroy -var-file=terraform.tfstate.d/${2}/destroy.tfvars
+      terraform destroy -var-file=${TF_STATE_DIR}/terraform.tfstate.d/${2}/destroy.tfvars
       terraform workspace select default
       terraform workspace delete ${2}
     fi
