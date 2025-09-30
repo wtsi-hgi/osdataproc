@@ -6,7 +6,7 @@ exec >>/var/log/user_data.log 2>&1
 rm -f /var/lib/cloud/instance/sem/config_scripts_user
 
 REPO=https://github.com/wtsi-hgi/osdataproc.git
-BRANCH=containerise-cluster-building
+BRANCH=master
 FOLDER=/tmp/osdataproc
 
 # Wait for system to be ready and avoid dpkg lock conflicts
