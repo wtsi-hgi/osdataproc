@@ -133,7 +133,7 @@ PY
     terraform apply -input=false "${TF_STATE_DIR}/terraform.tfstate.d/${2}/plan"
     terraform output -json > ${TF_STATE_DIR}/terraform.tfstate.d/${2}/outputs.json
     ansible "master"
-    ansible "workers"
+    # Workers are configured via cloud-init user-data, no separate Ansible run needed
     exit 0
     ;;
   # The debug option to rerun Ansible playbook on master node. Run with the fill path and the cluster name
