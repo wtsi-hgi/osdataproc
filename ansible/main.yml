@@ -3,6 +3,9 @@
 - hosts: spark_master
   become: true
   gather_facts: no
+  module_defaults:
+          ansible.builtin.apt:
+                  lock_timeout: 600
   vars:
           ansible_ssh_common_args: -o IdentitiesOnly=yes
           ansible_ssh_private_key_file: "{{ (osdataproc.public_key | regex_replace('\\.pub$', '')) | regex_replace('^~', lookup('env','HOME')) }}"
@@ -16,6 +19,9 @@
 - hosts: spark_workers,localhost
   become: true
   gather_facts: no
+  module_defaults:
+          ansible.builtin.apt:
+                  lock_timeout: 600
   vars:
           ansible_ssh_private_key_file: "{{ (osdataproc.public_key | regex_replace('\\.pub$', '')) | regex_replace('^~', lookup('env','HOME')) }}"
           nfs_volume: "{{ osdataproc.nfs_volume | default('') }}"
