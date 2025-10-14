@@ -27,7 +27,7 @@ osdataproc:
 python_version: 3.12
 hadoop_version: 3.4.1  # FIXME: The hadoop version also hardcoded in the ansible/roles/hadoop_common/defaults/main.yaml
 spark_version: 3.5.6   # FIXME: Spark version hardcoded in ansible/roles/spark_common/defaults/main.yaml
-hail_version: 0.2.134  # FIXME: Hardcoded in ansible/roles/spark_common/defaults/main.yaml
+hail_version: 0.2.136  # FIXME: Hardcoded in ansible/roles/spark_common/defaults/main.yaml
 
 ## Additional Ubuntu packages to install on the cluster
 extra_pkgs:
@@ -36,6 +36,7 @@ extra_pkgs:
 ## Additional pip python modules to install on the cluster
 master_extra_python_modules:
   - gnomad
+  - omegaconf
 worker_extra_python_modules:
   - numpy
 

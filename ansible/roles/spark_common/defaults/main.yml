@@ -16,8 +16,10 @@ spark_group: "{{ group }}"
 spark_master_host: spark-master
 spark_master_port: 7077
 
-hail_version: 0.2.134  # TODO: Merge with the main vars.yaml
+hail_version: 0.2.136  # TODO: Merge with the main vars.yaml
 hail_install_dir: "{{ venv_dir }}"
 hail_home: "{{ hail_install_dir }}"
+
+gnomad_version: 0.8.2
 
 password: "{{ lookup('env', 'PASSWORD') }}"
