@@ -76,6 +76,7 @@
             - "pyspark=={{ spark_version }}"
             - jupyterlab==2.2.9
             - pyopenssl
+            - ipykernel
             - "gnomad=={{ gnomad_version }}"
             - omegaconf>=2.3.0
           virtualenv: "{{ venv_dir }}"
@@ -89,6 +90,13 @@
           name: "{{ master_extra_python_modules }}"
           virtualenv: "{{ venv_dir }}"
           virtualenv_command: /usr/bin/python3.12 -m venv
+
+- name: Register venv kernel with Jupyter
+  become: yes
+  become_user: "{{ spark_user }}"
+  command: "{{ venv_dir }}/bin/python -m ipykernel install --user --name hail-venv --display-name 'Python (hail-venv)'"
+  args:
+    creates: "{{ home }}/.local/share/jupyter/kernels/hail-venv/kernel.json"
 
 - name: Create Jupyter directories
   file:
