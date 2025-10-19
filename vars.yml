@@ -35,8 +35,8 @@ extra_pkgs:
   - mc
 ## Additional pip python modules to install on the cluster
 master_extra_python_modules:
-  - gnomad
-  - omegaconf
+  - "gnomad=={{ gnomad_version }}"
+  - omegaconf>=2.3.0
 worker_extra_python_modules:
   - numpy
 

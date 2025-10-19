@@ -79,8 +79,6 @@
             - notebook==7.2.2
             - pyopenssl
             - ipykernel
-            - "gnomad=={{ gnomad_version }}"
-            - omegaconf>=2.3.0
           virtualenv: "{{ venv_dir }}"
           virtualenv_command: /usr/bin/python3.12 -m venv
 
