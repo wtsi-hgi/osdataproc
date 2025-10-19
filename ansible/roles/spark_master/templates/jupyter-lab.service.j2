@@ -8,6 +8,9 @@ Environment=VIRTUAL_ENV={{ venv_dir }}
 Environment=PATH={{ venv_dir }}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
 Environment=PYSPARK_PYTHON={{ venv_dir }}/bin/python
 Environment=PYSPARK_DRIVER_PYTHON={{ venv_dir }}/bin/python
+Environment=HOME={{ home }}
+Environment=USER={{ user }}
+WorkingDirectory={{ home }}
 ExecStart={{ venv_dir }}/bin/jupyter lab --config={{ home }}/.jupyter/jupyter_notebook_config.py
 User={{ user }}
 KillMode=process
