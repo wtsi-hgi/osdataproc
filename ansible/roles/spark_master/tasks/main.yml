@@ -135,7 +135,28 @@
   when: lustre.stat.exists == True
 
 - name: Generate Jupyter password
-  shell: "{{ venv_dir }}/bin/python -c \"from notebook.auth import passwd ; print(passwd('{{ password }}'))\""
+  shell: |
+    {{ venv_dir }}/bin/python - <<'PY'
+    import sys
+    from importlib import import_module
+
+    password = {{ password | to_json }}
+
+    passwd_fn = None
+    for mod_name in ("jupyter_server.auth", "notebook.auth"):
+        try:
+            module = import_module(mod_name)
+        except ImportError:
+            continue
+        passwd_fn = getattr(module, "passwd", None)
+        if callable(passwd_fn):
+            break
+
+    if not callable(passwd_fn):
+        raise RuntimeError("Unable to import passwd() from jupyter_server.auth or notebook.auth")
+
+    print(passwd_fn(password))
+    PY
   register: jupyter_notebookapp_password
 
 - name: Create Jupyter config file
