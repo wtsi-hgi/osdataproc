@@ -4,4 +4,13 @@ c.NotebookApp.port = 8888
 c.NotebookApp.notebook_dir = '{{ home }}/jupyter'
 c.NotebookApp.password = "{{ jupyter_notebookapp_password.stdout }}"
 c.NotebookApp.base_url = '/jupyter'
+
+c.ServerApp.ip = '0.0.0.0'
+c.ServerApp.open_browser = False
+c.ServerApp.port = 8888
+c.ServerApp.root_dir = '{{ home }}/jupyter'
+c.ServerApp.password = "{{ jupyter_notebookapp_password.stdout }}"
+c.ServerApp.base_url = '/jupyter'
+c.ServerApp.default_url = '/lab'
+c.ServerApp.trust_xheaders = True
 c.MultiKernelManager.default_kernel_name = 'hail-venv'

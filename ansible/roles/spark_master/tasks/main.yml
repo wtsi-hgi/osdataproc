@@ -74,7 +74,9 @@
           name:
             - "hail=={{ hail_version }}"
             - "pyspark=={{ spark_version }}"
-            - jupyterlab==2.2.9
+            - jupyterlab==4.2.5
+            - jupyter_server==2.14.2
+            - notebook==7.2.2
             - pyopenssl
             - ipykernel
             - "gnomad=={{ gnomad_version }}"
@@ -106,6 +108,10 @@
           group: "{{ spark_group }}"
   loop:
           - "{{ home }}/.jupyter"
+          - "{{ home }}/.local"
+          - "{{ home }}/.local/share"
+          - "{{ home }}/.local/share/jupyter"
+          - "{{ home }}/.local/share/jupyter/runtime"
           - "{{ home }}/jupyter"
 
 - name: Symlink Jupyter directory in data directory
