@@ -5,17 +5,21 @@ After=network.target
 [Service]
 Environment=SPARK_HOME={{ spark_home }}
 Environment=VIRTUAL_ENV={{ venv_dir }}
-Environment=PATH={{ venv_dir }}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+Environment=PATH={{ venv_dir }}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 Environment=PYSPARK_PYTHON={{ venv_dir }}/bin/python
 Environment=PYSPARK_DRIVER_PYTHON={{ venv_dir }}/bin/python
 Environment=HOME={{ home }}
 Environment=USER={{ user }}
+Environment=JUPYTER_CONFIG_DIR={{ home }}/.jupyter
+Environment=JUPYTER_RUNTIME_DIR={{ home }}/.local/share/jupyter/runtime
 WorkingDirectory={{ home }}
-ExecStart={{ venv_dir }}/bin/jupyter lab --config={{ home }}/.jupyter/jupyter_notebook_config.py
+ExecStart={{ venv_dir }}/bin/jupyter-lab --config={{ home }}/.jupyter/jupyter_notebook_config.py --ip=0.0.0.0 --port=8888 --ServerApp.base_url=/jupyter --ServerApp.root_dir={{ home }}/jupyter
 User={{ user }}
+Group={{ group }}
 KillMode=process
 KillSignal=SIGINT
 Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
