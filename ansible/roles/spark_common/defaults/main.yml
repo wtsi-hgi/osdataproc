@@ -22,4 +22,6 @@ hail_home: "{{ hail_install_dir }}"
 
 gnomad_version: 0.8.2
 
+jsonschema_version: 4.23.0
+
 password: "{{ lookup('env', 'PASSWORD') }}"

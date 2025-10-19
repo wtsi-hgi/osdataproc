@@ -91,6 +91,15 @@
           virtualenv: "{{ venv_dir }}"
           virtualenv_command: /usr/bin/python3.12 -m venv
 
+- name: Override jsonschema version for Jupyter compatibility
+  become: yes
+  become_user: "{{ spark_user }}"
+  pip:
+          name: "jsonschema=={{ jsonschema_version }}"
+          extra_args: --no-deps
+          virtualenv: "{{ venv_dir }}"
+          virtualenv_command: /usr/bin/python3.12 -m venv
+
 - name: Register venv kernel with Jupyter
   become: yes
   become_user: "{{ spark_user }}"
