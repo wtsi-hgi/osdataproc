@@ -23,9 +23,9 @@ nfs_pkgs:
 
 lustre_mounts:
         - name: scratch126
-          src: "lus26-mds2@tcp3:lus26-mds1@tcp3:/lus26"
+          src: "10.160.42.4@tcp:10.160.42.5@tcp:/lus26"
           path: "/lustre/scratch126"
-          opts: "rw,flock,localflock,defaults,_netdev,network=tcp3"
+          opts: "rw,flock,lazystatfs,encrypt,_netdev"
 
 python_pkgs:
         - python3-pip
