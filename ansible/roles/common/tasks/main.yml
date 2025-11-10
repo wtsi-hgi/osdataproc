@@ -91,38 +91,6 @@
           name: "{{ nfs_pkgs }}"
           state: latest
 
-- name: Ensure Lustre mount points exist
-  become: yes
-  file:
-          path: "{{ item.path }}"
-          state: directory
-          owner: root
-          group: root
-          mode: 0755
-  loop: "{{ lustre_mounts }}"
-  when: lustre_mounts | length > 0
-
-- name: Ensure Lustre mount entries exist in fstab
-  become: yes
-  lineinfile:
-          path: /etc/fstab
-          regexp: "^{{ item.src | regex_escape }}\\s+{{ item.path | regex_escape }}\\s+lustre\\s"
-          line: "{{ item.src }} {{ item.path }} lustre {{ item.opts }} 0 0"
-          create: yes
-  loop: "{{ lustre_mounts }}"
-  when: lustre_mounts | length > 0
-
-- name: Mount Lustre filesystems
-  become: yes
-  mount:
-          path: "{{ item.path }}"
-          src: "{{ item.src }}"
-          fstype: lustre
-          opts: "{{ item.opts }}"
-          state: mounted
-  loop: "{{ lustre_mounts }}"
-  when: lustre_mounts | length > 0
-
 - name: Disable NFS server
   service: name=nfs-server state=stopped enabled=no
   tags: master
