@@ -21,6 +21,12 @@ nfs_pkgs:
         - nfs-common
         - cryptsetup
 
+lustre_mounts:
+        - name: scratch126
+          src: "lus26-mds2@tcp3:lus26-mds1@tcp3:/lus26"
+          path: "/lustre/scratch126"
+          opts: "rw,flock,localflock,defaults,_netdev,network=tcp3"
+
 python_pkgs:
         - python3-pip
         - python3-passlib
