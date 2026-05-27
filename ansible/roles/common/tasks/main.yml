@@ -37,6 +37,10 @@
 
 - name: Update apt cache
   apt: update_cache=yes
+  register: apt_cache_update
+  retries: 20
+  delay: 15
+  until: apt_cache_update is succeeded
 
 - name: Create nfs shared data directory
   file:
@@ -47,16 +51,28 @@
 
 - name: Wait for automatic system updates
   become: true
-  shell: while sudo fuser /var/lib/dpkg/{{ item }} >/dev/null 2>&1; do sleep 5; done;
-  loop:
-    - lock
-    - lock-frontend
+  shell: |
+    while \
+      fuser /var/lib/dpkg/lock >/dev/null 2>&1 || \
+      fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || \
+      fuser /var/lib/apt/lists/lock >/dev/null 2>&1 || \
+      fuser /var/cache/apt/archives/lock >/dev/null 2>&1 || \
+      pgrep -x unattended-upgr >/dev/null 2>&1 || \
+      systemctl is-active --quiet apt-daily.service || \
+      systemctl is-active --quiet apt-daily-upgrade.service; do
+      sleep 5
+    done
+  changed_when: false
 
 - name: Install Python packages
   become: yes
   apt:
           name: "{{ python_pkgs }}"
           state: latest
+  register: python_pkg_install
+  retries: 20
+  delay: 15
+  until: python_pkg_install is succeeded
 
 - name: Add deadsnakes PPA for Python 3.12
   become: yes
@@ -72,24 +88,40 @@
       - python3.12-venv
       - python3.12-dev
     state: present
+  register: python312_install
+  retries: 20
+  delay: 15
+  until: python312_install is succeeded
 
 - name: Install Java packages
   become: yes
   apt:
           name: "{{ java_pkgs }}"
           state: latest
+  register: java_pkg_install
+  retries: 20
+  delay: 15
+  until: java_pkg_install is succeeded
 
 - name: Install Scala
   become: yes
   apt:
           name: scala
           state: latest
+  register: scala_install
+  retries: 20
+  delay: 15
+  until: scala_install is succeeded
 
 - name: Install NFS packages
   become: yes
   apt:
           name: "{{ nfs_pkgs }}"
           state: latest
+  register: nfs_pkg_install
+  retries: 20
+  delay: 15
+  until: nfs_pkg_install is succeeded
 
 - name: Disable NFS server
   service: name=nfs-server state=stopped enabled=no
@@ -100,6 +132,10 @@
   apt:
           name: "{{ nginx_pkgs }}"
           state: latest
+  register: nginx_pkg_install
+  retries: 20
+  delay: 15
+  until: nginx_pkg_install is succeeded
   tags: master
 
 - name: Download nginx sources
@@ -170,6 +206,10 @@
   apt:
           name: "{{ netdata_pkgs }}"
           state: latest
+  register: netdata_pkg_install
+  retries: 20
+  delay: 15
+  until: netdata_pkg_install is succeeded
 
 - name: Download Netdata repo
   git:
@@ -183,6 +223,10 @@
   apt:
           name: "{{ extra_pkgs }}"
           state: latest
+  register: extra_pkg_install
+  retries: 20
+  delay: 15
+  until: extra_pkg_install is succeeded
 
 - name: Start nginx
   service: name=nginx state=started enabled=yes
