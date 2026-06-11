@@ -69,7 +69,7 @@ def ensure_pre_downloads(config):
     """
 
     downloads_dir = os.path.expanduser(
-        config.get("downloads_dir", "/tmp/osdataproc-cache")
+        config.get("downloads_dir", "/nfs/hgi/osdataproc-cache")
     )
     os.makedirs(downloads_dir, exist_ok=True)
 
