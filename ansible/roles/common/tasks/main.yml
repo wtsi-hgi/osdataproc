@@ -50,7 +50,6 @@
       fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || \
       fuser /var/lib/apt/lists/lock >/dev/null 2>&1 || \
       fuser /var/cache/apt/archives/lock >/dev/null 2>&1 || \
-      pgrep -x unattended-upgr >/dev/null 2>&1 || \
       systemctl is-active --quiet apt-daily.service || \
       systemctl is-active --quiet apt-daily-upgrade.service; do
       sleep 5
