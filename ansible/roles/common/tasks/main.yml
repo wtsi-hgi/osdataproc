@@ -4,7 +4,10 @@
   wait_for:
           path: /var/lib/cloud/instance/boot-finished
           state: present
-          timeout: 3600
+          timeout: 30
+  register: cloud_init_boot_finished
+  failed_when: false
+  changed_when: false
   tags: master
 
 - name: Include IP addresses
