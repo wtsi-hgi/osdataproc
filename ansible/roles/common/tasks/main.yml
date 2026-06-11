@@ -46,6 +46,26 @@
     done
   changed_when: false
 
+- name: Disable automatic apt jobs
+  become: true
+  shell: |
+    systemctl disable --now apt-daily.timer apt-daily-upgrade.timer || true
+    systemctl stop apt-daily.service apt-daily-upgrade.service unattended-upgrades.service || true
+    systemctl mask apt-daily.service apt-daily-upgrade.service unattended-upgrades.service || true
+  changed_when: false
+
+- name: Wait for apt locks after disabling automatic jobs
+  become: true
+  shell: |
+    while \
+      fuser /var/lib/dpkg/lock >/dev/null 2>&1 || \
+      fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || \
+      fuser /var/lib/apt/lists/lock >/dev/null 2>&1 || \
+      fuser /var/cache/apt/archives/lock >/dev/null 2>&1; do
+      sleep 5
+    done
+  changed_when: false
+
 - name: Update apt cache
   apt: update_cache=yes
   register: apt_cache_update
