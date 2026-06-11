@@ -3,7 +3,7 @@
 # FIXME This script leaves a lot to be desired! Rather than rewrite it,
 # it may be easier to incorporate into the osdataproc Python CLI...
 
-set -euo pipefail
+set -eo pipefail
 OSDP_HOME=$(dirname "$0")
 
 # Use external directory for terraform state files (outside container)
