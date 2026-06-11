@@ -42,7 +42,7 @@ From: python:3.8-slim
     rm -f /tmp/terraform.zip
 
     # CLI shim to run with co-located vars.yml
-    printf '#!/bin/sh\nexec python3 /opt/osdataproc/osdataproc/osdataproc.py "$@"\n' > /usr/local/bin/osdataproc
+    printf '#!/bin/sh\nexec python3 /opt/osdataproc/osdataproc.py "$@"\n' > /usr/local/bin/osdataproc
     chmod +x /usr/local/bin/osdataproc
 
     # Remove any local terraform state and provider cache from the image
