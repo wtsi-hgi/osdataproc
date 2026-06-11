@@ -148,7 +148,9 @@ def act(args, command):
         sys.exit("openrc.sh must be sourced")
     osdataproc_home = os.path.dirname(os.path.realpath(__file__))
     run_args = get_args(args, command)
-    subprocess.run([f"{osdataproc_home}/run", "init"])
+    init_result = subprocess.run([f"{osdataproc_home}/run", "init"])
+    if init_result.returncode != 0:
+        sys.exit(init_result.returncode)
     # Ensure the CLI-provided public key is injected into vars.yml for Ansible
     # This mirrors/augments the injection performed in the run script and ensures
     # correctness even when vars.yml already exists from a previous run.
@@ -173,7 +175,9 @@ def act(args, command):
                 yaml.safe_dump(data, f, default_flow_style=False, sort_keys=False)
     except Exception as e:
         print(f"Warning: could not inject public_key into vars.yml: {e}")
-    subprocess.run(run_args)
+    result = subprocess.run(run_args)
+    if result.returncode != 0:
+        sys.exit(result.returncode)
 
 
 def get_args(args, command):
