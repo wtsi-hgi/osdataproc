@@ -100,6 +100,7 @@ case ${1} in
     trap cleanup ERR
     get_apply_vars $@
     # Ensure Ansible receives the CLI public key via vars.yml override
+    export OSDP_HOME_OVERRIDE="${OSDP_HOME}"
     python3 - <<'PY' || true
 import os, sys
 try:
@@ -109,16 +110,38 @@ except Exception as e:
     sys.exit(0)
 tf_state_dir = os.environ.get('TF_STATE_DIR')
 pub_key = os.environ.get('PROVIDED_PUBLIC_KEY_PATH')
+osdp_home = os.environ.get('OSDP_HOME_OVERRIDE') or os.path.dirname(os.path.realpath(__file__))
 if not tf_state_dir or not pub_key:
     sys.exit(0)
 vars_path = os.path.join(tf_state_dir, 'vars.yml')
+defaults_path = os.path.join(osdp_home, 'vars.yml')
+try:
+    with open(defaults_path, 'r') as f:
+        defaults = yaml.safe_load(f) or {}
+except FileNotFoundError:
+    defaults = {}
 try:
     with open(vars_path, 'r') as f:
-        data = yaml.safe_load(f) or {}
+        existing = yaml.safe_load(f) or {}
 except FileNotFoundError:
-    data = {}
-osd = data.get('osdataproc') or {}
+    existing = {}
+
+data = dict(defaults)
+for key in (
+    'extra_pkgs',
+    'master_extra_python_modules',
+    'worker_extra_python_modules',
+    'hadoop_config',
+    'spark_config',
+):
+    if key in existing:
+        data[key] = existing[key]
+
+osd = dict(defaults.get('osdataproc') or {})
+osd.update(existing.get('osdataproc') or {})
 osd['public_key'] = pub_key
+if os.environ.get('OSDP_DOWNLOADS_DIR'):
+    osd['downloads_dir'] = os.path.expanduser(os.environ['OSDP_DOWNLOADS_DIR'])
 data['osdataproc'] = osd
 with open(vars_path, 'w') as f:
     yaml.safe_dump(data, f, default_flow_style=False, sort_keys=False)

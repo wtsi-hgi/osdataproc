@@ -2,7 +2,7 @@
 user: ubuntu
 group: ubuntu
 home: "/home/{{ user }}"
-java_home: /usr
+java_home: /usr/lib/jvm/java-11-openjdk-amd64
 
 venv_dir: "{{ home }}/venv"
 netdata_dir: /opt/netdata

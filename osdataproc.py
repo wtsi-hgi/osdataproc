@@ -280,6 +280,8 @@ def cli():
     # Start from defaults and apply CLI overrides last (priority)
     merged = dict(defaults["osdataproc"])
     merged.update(cli_overrides)
+    if os.environ.get("OSDP_DOWNLOADS_DIR"):
+        merged["downloads_dir"] = os.path.expanduser(os.environ["OSDP_DOWNLOADS_DIR"])
     for key in [
         "hadoop_version",
         "spark_version",

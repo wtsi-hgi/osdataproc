@@ -1,8 +1,5 @@
 ---
 
-- name: Gather facts after connection
-  setup:
-
 - name: Wait for cloud-init to finish
   wait_for:
           path: /var/lib/cloud/instance/boot-finished
@@ -31,23 +28,16 @@
 
 - name: Restart systemd resolver
   become: yes
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: systemd-resolved
     state: restarted
+  async: 30
+  poll: 0
 
-- name: Update apt cache
-  apt: update_cache=yes
-  register: apt_cache_update
-  retries: 20
-  delay: 15
-  until: apt_cache_update is succeeded
-
-- name: Create nfs shared data directory
-  file:
-          state: directory
-          path: "{{ home }}/data"
-          owner: "{{ user }}"
-          group: "{{ group }}"
+- name: Wait for SSH after resolver restart
+  wait_for_connection:
+    timeout: 120
+    delay: 2
 
 - name: Wait for automatic system updates
   become: true
@@ -63,6 +53,20 @@
       sleep 5
     done
   changed_when: false
+
+- name: Update apt cache
+  apt: update_cache=yes
+  register: apt_cache_update
+  retries: 20
+  delay: 15
+  until: apt_cache_update is succeeded
+
+- name: Create nfs shared data directory
+  file:
+          state: directory
+          path: "{{ home }}/data"
+          owner: "{{ user }}"
+          group: "{{ group }}"
 
 - name: Install Python packages
   become: yes
