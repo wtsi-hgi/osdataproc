@@ -5,6 +5,10 @@
 {{ ip }} {{ lookup('env', 'CLUSTER_PREFIX') }}-worker-{{ "%02d" | format(loop.index) }}
 {% endfor %}
 
+{% for entry in lustre_hosts_entries | default([]) %}
+{{ entry }}
+{% endfor %}
+
 # The following lines are desirable for IPv6 capable hosts
 ::1 ip6-localhost ip6-loopback
 fe00::0 ip6-localnet

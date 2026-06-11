@@ -6,6 +6,18 @@
           name: ip_addresses
   tags: master
 
+- name: Read existing hosts file
+  become: yes
+  ansible.builtin.slurp:
+    src: /etc/hosts
+  register: existing_hosts_file
+  tags: master
+
+- name: Preserve Lustre MDS host entries
+  ansible.builtin.set_fact:
+    lustre_hosts_entries: "{{ (existing_hosts_file.content | b64decode).splitlines() | select('match', '^\\s*\\S+\\s+lus\\d+-mds\\d+(\\s|$)') | list }}"
+  tags: master
+
 - name: Write hosts file
   become: yes
   template: src=hosts.j2 dest=/etc/hosts
