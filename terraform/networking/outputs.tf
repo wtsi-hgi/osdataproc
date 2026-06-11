@@ -6,7 +6,7 @@ output "master_ports" {
 }
 
 output "workers_ports" {
-  value = [for idx in range(var.workers):
+  value = [for idx in range(var.workers) :
     concat(
       [openstack_networking_port_v2.worker[idx].id],
       local.with_lustre ? [openstack_networking_port_v2.lustre[idx + 1].id] : []
@@ -16,6 +16,10 @@ output "workers_ports" {
 
 output "worker_ips" {
   value = flatten(openstack_networking_port_v2.worker[*].all_fixed_ips)
+}
+
+output "master_ip" {
+  value = openstack_networking_port_v2.master.all_fixed_ips[0]
 }
 
 output "floating_ip" {

@@ -15,19 +15,19 @@ data "cloudinit_config" "user_data" {
         "power-state-change"
       ]
       # Disable automatic updates during cloud-init to avoid conflicts
-      package_update = false
+      package_update  = false
       package_upgrade = false
     })
   }
-  
+
   # User data script with better error handling
   part {
     content_type = "text/x-shellscript"
     content = templatefile("user-data.sh.tpl", {
       # Master IP and worker nodes for /etc/hosts
       # FIXME Leaky abstraction
-      master  = openstack_compute_instance_v2.spark_master.access_ip_v4,
-      workers = { for i in range(var.workers):
+      master = module.networking.master_ip,
+      workers = { for i in range(var.workers) :
         # NOTE It doesn't matter if we associate the wrong IP
         # to the wrong host, as long as it's consistent
         format("${local.name_prefix}-worker-%02d", i + 1) => module.networking.worker_ips[i]
@@ -42,12 +42,12 @@ data "cloudinit_config" "user_data" {
 resource "openstack_compute_instance_v2" "spark_worker" {
   count = var.workers
 
-  name        = format("${local.name_prefix}-worker-%02d", count.index + 1)
-  image_name  = var.image_name
-  flavor_name = var.flavor_name
-  key_pair    = openstack_compute_keypair_v2.spark_keypair.id
+  name         = format("${local.name_prefix}-worker-%02d", count.index + 1)
+  image_name   = var.image_name
+  flavor_name  = var.flavor_name
+  key_pair     = openstack_compute_keypair_v2.spark_keypair.id
   config_drive = true
-  user_data   = data.cloudinit_config.user_data.rendered
+  user_data    = data.cloudinit_config.user_data.rendered
 
   dynamic "network" {
     for_each = module.networking.workers_ports[count.index]
