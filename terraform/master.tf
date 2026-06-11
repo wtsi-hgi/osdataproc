@@ -1,9 +1,32 @@
+data "cloudinit_config" "master_user_data" {
+  part {
+    content_type = "text/cloud-config"
+    content = yamlencode({
+      network = {
+        version = 2
+        ethernets = {
+          all = {
+            match = {
+              name = "en*"
+            }
+            dhcp4    = true
+            optional = true
+          }
+        }
+      }
+      package_update  = false
+      package_upgrade = false
+    })
+  }
+}
+
 resource "openstack_compute_instance_v2" "spark_master" {
   name         = "${local.name_prefix}-master"
   image_name   = var.image_name
   flavor_name  = var.flavor_name
   key_pair     = openstack_compute_keypair_v2.spark_keypair.id
   config_drive = true
+  user_data    = data.cloudinit_config.master_user_data.rendered
 
   personality {
     file    = "/etc/systemd/system/systemd-networkd-wait-online.service"

@@ -17,6 +17,18 @@ data "cloudinit_config" "user_data" {
       # Disable automatic updates during cloud-init to avoid conflicts
       package_update  = false
       package_upgrade = false
+      network = {
+        version = 2
+        ethernets = {
+          all = {
+            match = {
+              name = "en*"
+            }
+            dhcp4    = true
+            optional = true
+          }
+        }
+      }
     })
   }
 
