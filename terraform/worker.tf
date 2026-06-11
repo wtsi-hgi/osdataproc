@@ -72,3 +72,9 @@ resource "openstack_compute_instance_v2" "spark_worker" {
     }
   }
 }
+
+resource "openstack_compute_interface_attach_v2" "spark_worker_lustre" {
+  count       = var.lustre_network == "" ? 0 : var.workers
+  instance_id = openstack_compute_instance_v2.spark_worker[count.index].id
+  port_id     = module.networking.lustre_ports[count.index + 1]
+}

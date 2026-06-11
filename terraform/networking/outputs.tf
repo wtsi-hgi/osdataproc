@@ -1,17 +1,15 @@
 output "master_ports" {
-  value = concat(
-    [openstack_networking_port_v2.master.id],
-    local.with_lustre ? [openstack_networking_port_v2.lustre[0].id] : []
-  )
+  value = [openstack_networking_port_v2.master.id]
 }
 
 output "workers_ports" {
   value = [for idx in range(var.workers) :
-    concat(
-      [openstack_networking_port_v2.worker[idx].id],
-      local.with_lustre ? [openstack_networking_port_v2.lustre[idx + 1].id] : []
-    )
+    [openstack_networking_port_v2.worker[idx].id]
   ]
+}
+
+output "lustre_ports" {
+  value = openstack_networking_port_v2.lustre[*].id
 }
 
 output "worker_ips" {
