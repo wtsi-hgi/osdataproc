@@ -268,6 +268,15 @@ def cli():
     with open(f"{osdataproc_home}/vars.yml", "r") as stream:
         defaults = yaml.safe_load(stream)
 
+    tf_state_dir = os.environ.get(
+        "TF_STATE_DIR", os.path.join(os.getcwd(), "terraform-state")
+    )
+    try:
+        with open(os.path.join(tf_state_dir, "vars.yml"), "r") as stream:
+            state_defaults = yaml.safe_load(stream) or {}
+    except FileNotFoundError:
+        state_defaults = {}
+
     # Build overrides from CLI where provided (CLI should take precedence)
     cli_overrides = {k: v for k, v in vars(args).items() if v is not None}
     # Map argparse names to vars.yml keys where they differ
@@ -277,20 +286,22 @@ def cli():
         # Normalise American spelling if ever present
         cli_overrides["flavour"] = cli_overrides.pop("flavor")
 
-    # Start from defaults and apply CLI overrides last (priority)
+    # Start from packaged defaults, then persistent state vars, then CLI/env overrides.
     merged = dict(defaults["osdataproc"])
-    merged.update(cli_overrides)
-    if os.environ.get("OSDP_DOWNLOADS_DIR"):
-        merged["downloads_dir"] = os.path.expanduser(os.environ["OSDP_DOWNLOADS_DIR"])
+    merged.update(state_defaults.get("osdataproc") or {})
     for key in [
         "hadoop_version",
         "spark_version",
         "hadoop_mirror",
         "spark_mirror",
-        "downloads_dir",
     ]:
         if key in defaults:
             merged[key] = defaults[key]
+        if key in state_defaults:
+            merged[key] = state_defaults[key]
+    merged.update(cli_overrides)
+    if os.environ.get("OSDP_DOWNLOADS_DIR"):
+        merged["downloads_dir"] = os.path.expanduser(os.environ["OSDP_DOWNLOADS_DIR"])
 
     args.func(merged)
 
