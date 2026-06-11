@@ -4,7 +4,6 @@ resource "openstack_compute_instance_v2" "spark_master" {
   flavor_name  = var.flavor_name
   key_pair     = openstack_compute_keypair_v2.spark_keypair.id
   config_drive = true
-  user_data    = data.cloudinit_config.user_data.rendered
 
   dynamic "network" {
     for_each = module.networking.master_ports
