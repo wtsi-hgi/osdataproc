@@ -49,6 +49,22 @@ resource "openstack_compute_instance_v2" "spark_worker" {
   config_drive = true
   user_data    = data.cloudinit_config.user_data.rendered
 
+  personality {
+    file    = "/etc/systemd/system/systemd-networkd-wait-online.service"
+    content = <<-EOT
+      [Unit]
+      Description=Skip blocking network-online wait
+
+      [Service]
+      Type=oneshot
+      ExecStart=/bin/true
+      RemainAfterExit=yes
+
+      [Install]
+      WantedBy=network-online.target
+    EOT
+  }
+
   dynamic "network" {
     for_each = module.networking.workers_ports[count.index]
     content {
