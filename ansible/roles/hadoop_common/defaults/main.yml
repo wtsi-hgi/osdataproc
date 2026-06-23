@@ -1,6 +1,6 @@
 ---
 hadoop_version: 3.4.0 # TODO: Merge with the main vars.yaml
-hadoop_mirror: https://archive.apache.org/dist/hadoop/common
+hadoop_mirror: https://dlcdn.apache.org/hadoop/common
 
 hadoop_download_dir: /opt/osdataproc
 hadoop_install_dir: /opt/hadoop
