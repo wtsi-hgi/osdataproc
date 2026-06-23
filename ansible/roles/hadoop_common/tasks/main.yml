@@ -84,6 +84,14 @@
   loop:
           - go.d
           - health.d
+- name: Install cluster health check script
+  copy:
+          src: cluster_healthcheck.sh
+          dest: /usr/local/bin/cluster_healthcheck.sh
+          owner: root
+          group: root
+          mode: '0755'
+    tags: master
 
 - name: Create netdata hdfs.conf file
   template: src=netdata/hdfs.conf.j2 dest=/etc/netdata/go.d/hdfs.conf mode=0644
