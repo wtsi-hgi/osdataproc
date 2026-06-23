@@ -18,17 +18,30 @@
           - "{{ yarn_home }}"
           - "{{ yarn_logs_dir }}"
 
-- name: Echo Hadoop download URL
-  ansible.builtin.debug:
-    msg: "{{ hadoop_mirror }}/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz"
+#- name: Echo Hadoop download URL
+#  ansible.builtin.debug:
+#    msg: "{{ hadoop_mirror }}/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz"
+#
+#- name: Download Hadoop distribution (about 1Gb, can take a while)
+#  become: yes
+#  get_url:
+#          url: "{{ hadoop_mirror }}/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz"
+#          dest: "{{ hadoop_download_dir }}/hadoop.tar.gz"
+#          timeout: 60
+#  tags: master
 
-- name: Download Hadoop distribution (about 1Gb, can take a while)
+- name: Notify deployment of local static Hadoop transfer
+  ansible.builtin.debug:
+    msg: "Piping local hadoop-{{ hadoop_version }}.tar.gz to remote node asset cache"
+
+- name: Securely upload local Hadoop distribution to remote node
   become: yes
-  get_url:
-          url: "{{ hadoop_mirror }}/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz"
-          dest: "{{ hadoop_download_dir }}/hadoop.tar.gz"
-          timeout: 60
+  ansible.builtin.copy:
+    src: "hadoop-{{ hadoop_version }}.tar.gz"  # Looks inside roles/hadoop_common/files/
+    dest: "{{ hadoop_download_dir }}/hadoop.tar.gz"
+    mode: '0644'
   tags: master
+
 
 - name: Extract Hadoop distribution
   become: yes

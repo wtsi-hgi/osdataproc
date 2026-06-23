@@ -51,6 +51,12 @@
   loop:
     - lock
     - lock-frontend
+- name: Add DeadSnakes PPA for Python 3.9 support
+  become: yes
+  apt_repository:
+    repo: 'ppa:deadsnakes/ppa'
+    state: present
+    update_cache: yes
 
 - name: Install Python packages
   become: yes
@@ -129,22 +135,27 @@
   command: "./configure --prefix={{ nginx_prefix }} {{ nginx_custom_modules }} --add-module={{ subs_filter_path }}"
   args:
           chdir: "{{ nginx_install_dir }}"
-  when: nginx_source_unpack.changed
+          creates: "{{ nginx_prefix }}/sbin/nginx"
   register: nginx_configure
   tags: master
 
 - name: Installing nginx
   become: yes
-  shell: make && make install
+  shell: make CFLAGS="-Wno-error=deprecated-declarations" && make install
   args:
           chdir: "{{ nginx_install_dir }}"
-  when: nginx_configure.changed
+          creates: "{{ nginx_prefix }}/sbin/nginx"
   tags: master
 
 - name: Create nginx service file
   become: yes
   template: src=nginx.service.j2 dest=/etc/systemd/system/nginx.service
   tags: master
+
+- name: Force systemd to reread the new service file
+  become: yes
+  ansible.builtin.systemd:
+    daemon_reload: yes
 
 - name: Install Netdata packages
   become: yes

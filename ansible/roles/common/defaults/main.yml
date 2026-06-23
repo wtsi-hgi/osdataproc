@@ -42,7 +42,7 @@ netdata_pkgs:
         - automake
         - pkg-config
         - curl
-        - python
+        - python3
         - cmake
 
 nginx_pkgs:

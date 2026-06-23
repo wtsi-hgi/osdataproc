@@ -25,6 +25,14 @@
           timeout: 60
   tags: master
 
+#- name: Upload static local Spark distribution
+#  become: yes
+#  ansible.builtin.copy:
+#    src: "spark.tgz"  # Or "spark-{{ spark_version }}-bin-without-hadoop.tgz" depending on what you named it
+#    dest: "{{ spark_download_dir }}/spark.tgz"
+#    mode: '0644'
+#  tags: master
+
 - name: Extract Spark distribution
   become: yes
   unarchive:

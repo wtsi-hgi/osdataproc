@@ -6,6 +6,9 @@ import os
 import sys
 import volumes
 import yaml
+import collections
+import collections.abc
+collections.MutableMapping = collections.abc.MutableMapping
 
 def create(args):
     if args['nfs_volume'] is not None and args['volume_size'] is None:
