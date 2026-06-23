@@ -176,6 +176,17 @@
           name: "{{ extra_pkgs }}"
           state: latest
 
+- name: Install cluster health check script
+  copy:
+          src: cluster_healthcheck.sh
+          dest: /usr/local/bin/cluster_healthcheck.sh
+          owner: root
+          group: root
+          mode: '0755'
+  tags: master
+
+
+
 - name: Start nginx
   service: name=nginx state=started enabled=yes
   tags: master
