@@ -1,3 +1,13 @@
+# Terraform generated files
+terraform/.terraform.lock.hcl
+terraform/.terraform/
+terraform/workers.tf
+*.tfstate
+*.tfstate.backup
+
+#Local SSH keys
+ad7_id_rsa.pub
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
