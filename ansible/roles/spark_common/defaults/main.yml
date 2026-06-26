@@ -1,5 +1,5 @@
 ---
-spark_version: 3.5.8 # TODO: Merge with the main vars.yaml
+spark_version: 3.5.4 # TODO: Merge with the main vars.yaml
 spark_mirror: https://archive.apache.org/dist/spark
 
 spark_download_dir: /opt/osdataproc
