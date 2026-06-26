@@ -44,6 +44,15 @@
           virtualenv: "{{ venv_dir }}"
           virtualenv_command: /usr/bin/python{{ python_version }} -m venv
 
+- name: Configure PySpark in virtualenv
+  become: yes
+  blockinfile:
+    path: "{{ venv_dir }}/bin/activate"
+    marker: "# {mark} OSDATAPROC PYSPARK"
+    block: |
+      export PYSPARK_PYTHON="$VIRTUAL_ENV/bin/python"
+      export PYSPARK_DRIVER_PYTHON="$VIRTUAL_ENV/bin/python"
+
 - name: Install extra python modules in venv
   become: yes
   become_user: "{{ spark_user }}"
