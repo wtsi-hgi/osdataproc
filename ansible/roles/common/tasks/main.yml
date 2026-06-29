@@ -179,6 +179,15 @@
           mode: '0755'
   tags: master
 
+- name: Install cluster pyspark test script
+  copy:
+          src: cluster_test.py
+          dest: /usr/local/bin/cluster_test.py
+          owner: root
+          group: root
+          mode: '0755'
+  tags: master
+
 
 
 - name: Start nginx
