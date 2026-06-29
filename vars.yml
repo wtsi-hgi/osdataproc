@@ -22,7 +22,7 @@ osdataproc:
 
 ###############################################################################
 ## Default software versions
-python_version: 3.10
+python_version: "3.10"
 hadoop_version: 3.4.0  # FIXME: The hadoop version also hardcoded in the ansible/roles/hadoop_common/defaults/main.yaml
 spark_version: 3.5.4   # FIXME: Spark version hardcoded in ansible/roles/spark_common/defaults/main.yaml
 hail_version: 0.2.138  # FIXME: Hardcoded in ansible/roles/spark_common/defaults/main.yaml
