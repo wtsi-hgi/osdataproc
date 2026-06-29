@@ -51,12 +51,6 @@
   loop:
     - lock
     - lock-frontend
-- name: Add DeadSnakes PPA for Python 3.9 support
-  become: yes
-  apt_repository:
-    repo: 'ppa:deadsnakes/ppa'
-    state: present
-    update_cache: yes
 
 - name: Install Python packages
   become: yes
