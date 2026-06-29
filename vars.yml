@@ -29,7 +29,7 @@ hail_version: 0.2.138  # FIXME: Hardcoded in ansible/roles/spark_common/defaults
 
 ## Additional Ubuntu packages to install on the cluster
 extra_pkgs:
-  - python3.12-dev
+  - python3.10-dev
   - libpq-dev
   - mc
 ## Additional pip python modules to install on the cluster
