@@ -73,9 +73,14 @@
 - name: Install NFS packages
   become: yes
   apt:
-          name: "{{ nfs_pkgs }}"
-          state: latest
-
+    name: "{{ nfs_pkgs }}"
+    state: latest
+    update_cache: yes
+  register: apt_result
+  retries: 5
+  delay: 30
+  until: apt_result is succeeded
+  
 - name: Disable NFS server
   service: name=nfs-server state=stopped enabled=no
   tags: master
